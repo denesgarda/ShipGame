@@ -69,7 +69,7 @@ public class Main extends Application {
             }));
         }
         catch (SQLException ex) {
-            // handle any errors
+            //handle any errors
             //Alert alert = new Alert(Alert.AlertType.WARNING, "Unable to connect to server. Online functionalities will not work. If you want to use online functionalities, check your connection and try again.", ButtonType.OK);
             //alert.setTitle("Network connection error");
             //alert.setHeaderText("Network connection error");
