@@ -16,7 +16,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 public class Main extends Application {
-    double gameVersion = 2.0;
+    double gameVersion = 2.1;
     String account = "";
     boolean inGame = false;
 

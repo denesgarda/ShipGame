@@ -20,3 +20,6 @@
     - Fixed timeout bug
     - Fixed outdated game version bug
     - Fixed no offline mode bug
+- 2.1
+    - Fixed no database connection bug - pending
+    - Converted to exe
