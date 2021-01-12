@@ -1,5 +1,3 @@
-//test change
-//another change!!!!
 package sample;
 
 import javafx.application.Application;
