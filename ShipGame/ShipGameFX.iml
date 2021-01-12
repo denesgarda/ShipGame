@@ -16,7 +16,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="lib1" level="project" />
-    <orderEntry type="library" name="mysql-connector-java-5.1.491" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-5.1.49" level="project" />
   </component>
 </module>

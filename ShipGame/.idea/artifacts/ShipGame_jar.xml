@@ -68,29 +68,6 @@
       <element id="file-copy" path="$PROJECT_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib/javafx.swing.jar" />
       <element id="file-copy" path="$PROJECT_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib/javafx.web.jar" />
       <element id="file-copy" path="$PROJECT_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib/src.zip" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx-swt.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.base.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.controls.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.fxml.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.graphics.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.media.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.properties" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.swing.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/javafx.web.jar" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libdecora_sse.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libfxplugins.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libglass.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libglib-lite.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libgstreamer-lite.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libjavafx_font.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libjavafx_iio.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libjfxmedia_avf.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libjfxmedia.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libjfxwebkit.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libprism_common.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libprism_es2.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/libprism_sw.dylib" />
-      <element id="file-copy" path="$USER_HOME$/Downloads/javafx-sdk-11.0.2/lib/src.zip" />
     </root>
   </artifact>
 </component>
