@@ -16,7 +16,18 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="mysql-connector-java-5.1.49" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>
