@@ -30,6 +30,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="bin" level="project" />
+    <orderEntry type="library" name="bin" level="application" />
   </component>
 </module>
