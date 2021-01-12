@@ -321,35 +321,45 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn1 = conn;
         java.sql.Connection finalConn9 = conn;
+        java.sql.Connection finalConn14 = conn;
+        java.sql.Connection finalConn15 = conn;
         feedback.setOnAction(event -> {
             if(!(finalConn9 == null)) {
-                TextInputDialog dialog = new TextInputDialog("");
-                dialog.setTitle("Feedback");
-                dialog.setHeaderText("Enter feedback, bugs, etc.");
-                dialog.setContentText("Feedback:");
-                // Traditional way to get the response value.
-                Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    String feedbackToSend = result.get();
-                    if (feedbackToSend.equals("")) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING, "Feedback was not recorded as input was null.", ButtonType.OK);
-                        alert.setTitle("Feedback was not recorded");
-                        alert.setHeaderText("Feedback was not recorded");
-                        alert.showAndWait();
-                    } else {
-                        boolean successful = Connection.insertFeedbackRow(finalConn1, feedbackToSend);
-                        if (successful) {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Thank you for your feedback!", ButtonType.OK);
-                            alert.setTitle("Thank you for your feedback");
-                            alert.setHeaderText("Thank you for your feedback");
+                if(gameVersion == Connection.retrieveMaxVersion(finalConn14)) {
+                    TextInputDialog dialog = new TextInputDialog("");
+                    dialog.setTitle("Feedback");
+                    dialog.setHeaderText("Enter feedback, bugs, etc.");
+                    dialog.setContentText("Feedback:");
+                    // Traditional way to get the response value.
+                    Optional<String> result = dialog.showAndWait();
+                    if (result.isPresent()) {
+                        String feedbackToSend = result.get();
+                        if (feedbackToSend.equals("")) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "Feedback was not recorded as input was null.", ButtonType.OK);
+                            alert.setTitle("Feedback was not recorded");
+                            alert.setHeaderText("Feedback was not recorded");
                             alert.showAndWait();
                         } else {
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Feedback was not recorded as something went wrong!", ButtonType.OK);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Something went wrong");
-                            alert.showAndWait();
+                            boolean successful = Connection.insertFeedbackRow(finalConn1, feedbackToSend);
+                            if (successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Thank you for your feedback!", ButtonType.OK);
+                                alert.setTitle("Thank you for your feedback");
+                                alert.setHeaderText("Thank you for your feedback");
+                                alert.showAndWait();
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Feedback was not recorded as something went wrong!", ButtonType.OK);
+                                alert.setTitle("Error");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
                         }
                     }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, ("You are not using the latest supported version of the game. You are using either an outdated version, or a pre-release version. Please use v." + Connection.retrieveMaxVersion(finalConn15) + "."), ButtonType.OK);
+                    alert.setTitle("Unsupported version");
+                    alert.setHeaderText("Unsupported version");
+                    alert.showAndWait();
                 }
             }
             else {
@@ -384,7 +394,7 @@ public class Main extends Application {
                     "    - Fixed outdated game version bug\n" +
                     "    - Fixed no offline mode bug\n" +
                     "- 2.1\n" +
-                    "    - Fixed no database connection bug - pending\n" +
+                    "    - Changed to allow feedback only from latest version\n" +
                     "    - Converted to exe\n" +
                     "    - Added MacOS support\n" +
                     "    - Added option to continue after win", ButtonType.OK);
