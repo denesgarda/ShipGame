@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.Executors;
 
 public class Main extends Application {
     double gameVersion = 2.1;
