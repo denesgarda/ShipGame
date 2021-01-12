@@ -21,7 +21,7 @@
     - Fixed outdated game version bug
     - Fixed no offline mode bug
 - 2.1
-    - Changed to allow feedback only from latest version
+    - Changed to allow feedback only from latest supported version
     - Converted to exe
     - Added MacOS support
     - Added option to continue after win
