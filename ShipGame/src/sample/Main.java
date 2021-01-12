@@ -394,7 +394,7 @@ public class Main extends Application {
                     "    - Fixed outdated game version bug\n" +
                     "    - Fixed no offline mode bug\n" +
                     "- 2.1\n" +
-                    "    - Changed to allow feedback only from latest version\n" +
+                    "    - Changed to allow feedback only from latest supported version\n" +
                     "    - Converted to exe\n" +
                     "    - Added MacOS support\n" +
                     "    - Added option to continue after win", ButtonType.OK);
