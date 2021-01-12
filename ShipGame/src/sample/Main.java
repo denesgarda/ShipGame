@@ -1,5 +1,3 @@
-//something!!!!
-//something else!!!!
 package sample;
 
 import javafx.application.Application;
