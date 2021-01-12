@@ -1,0 +1,25 @@
+- 1.0
+    - Made the game
+- 1.1
+    - Removed console updates
+    - Fixed food buying bug
+    - Fixed selling bug
+    - Added patch notes section
+    - Added straightforward insufficient balance alerts
+    - Added better slider intervals
+    - Added money statistics
+    - Made the slider more user friendly
+- 1.2
+    - Made the online mode alert more user friendly
+    - Added network support
+    - Added feedback section
+    - Added automatic updater
+- 2.0
+    - Fixed early game end bug
+    - Added online mode
+    - Fixed timeout bug
+    - Fixed outdated game version bug
+    - Fixed no offline mode bug
+- 2.1
+    - Fixed no database connection bug - pending
+    - Converted to exe
