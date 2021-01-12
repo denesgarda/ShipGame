@@ -18,6 +18,7 @@ public class Main extends Application {
     double gameVersion = 2.1;
     String account = "";
     boolean inGame = false;
+    boolean doWinAlert = true;
 
     Random rand = new Random();
     int money = 2000;
@@ -108,7 +109,7 @@ public class Main extends Application {
         welcome.setY(150);
         welcome.setStyle("-fx-font-size: 25px;");
         mainMenuPane.getChildren().add(welcome);
-        Text version = new Text("v2.0");
+        Text version = new Text("v2.1");
         version.setStyle("-fx-font-size: 12px;");
         version.setX(375);
         version.setY(390);
@@ -143,7 +144,7 @@ public class Main extends Application {
         howToPlay.setLayoutY(260);
         mainMenuPane.getChildren().add(howToPlay);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
-        primaryStage.setTitle("The Ship Game v2.0");
+        primaryStage.setTitle("The Ship Game v2.1");
         primaryStage.setScene(mainMenu);
         primaryStage.show();
         Pane howToPlayPane = new Pane();
@@ -381,7 +382,12 @@ public class Main extends Application {
                     "    - Added online mode\n" +
                     "    - Fixed timeout bug\n" +
                     "    - Fixed outdated game version bug\n" +
-                    "    - Fixed no offline mode bug", ButtonType.OK);
+                    "    - Fixed no offline mode bug\n" +
+                    "- 2.1\n" +
+                    "    - Fixed no database connection bug - pending\n" +
+                    "    - Converted to exe\n" +
+                    "    - Added MacOS support\n" +
+                    "    - Added option to continue after win", ButtonType.OK);
             alert.setTitle("Patch Notes");
             alert.setHeaderText("Patch Notes");
             alert.showAndWait();
@@ -542,6 +548,7 @@ public class Main extends Application {
         howMuchToBuyPane.getChildren().add(buyButton);
         Scene howMuchToBuyScene = new Scene(howMuchToBuyPane, 400, 400);
         playOffline.setOnAction(event -> {
+            doWinAlert = true;
             inGame = true;
             portPane.getChildren().remove(portInventory);
             portPane.getChildren().remove(yourInventory);
@@ -802,36 +809,52 @@ public class Main extends Application {
             portPane.getChildren().add(quit);
             primaryStage.setScene(portScene);
             if (money <= 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
-                inGame = false;
-                if(!(account.equals(""))) {
-                    boolean addWin = Connection.addWin(finalConn13, account);
-                    if(addWin) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
-                        alert.setTitle("You win");
-                        alert.setHeaderText("You win");
-                        alert.showAndWait();
+                if(doWinAlert) {
+                    if (!(account.equals(""))) {
+                        if (inGame) {
+                            boolean addWin = Connection.addWin(finalConn13, account);
+                            if (addWin) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
+                                alert.setTitle("You win");
+                                alert.setHeaderText("You win");
+                                alert.showAndWait();
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
                     }
-                    else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
-                        alert.setTitle("Something went wrong");
-                        alert.setHeaderText("Something went wrong");
-                        alert.showAndWait();
+                    winPane.getChildren().add(quit);
+                    primaryStage.setScene(winScene);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Continue?");
+                    alert.setHeaderText("Continue?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.YES) {
+                        doWinAlert = false;
+                        sailingPane.getChildren().add(quit);
+                        primaryStage.setScene(sailingScene);
                     }
                 }
-                winPane.getChildren().add(quit);
-                primaryStage.setScene(winScene);
+                inGame = false;
             } else if (food < 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             }
@@ -872,36 +895,52 @@ public class Main extends Application {
             primaryStage.setScene(sailingScene);
             food = oldFood - 5;
             if (money <= 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
-                inGame = false;
-                if(!(account.equals(""))) {
-                    boolean addWin = Connection.addWin(finalConn13, account);
-                    if(addWin) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
-                        alert.setTitle("You win");
-                        alert.setHeaderText("You win");
-                        alert.showAndWait();
+                if(doWinAlert) {
+                    if (!(account.equals(""))) {
+                        if(inGame) {
+                            boolean addWin = Connection.addWin(finalConn13, account);
+                            if (addWin) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
+                                alert.setTitle("You win");
+                                alert.setHeaderText("You win");
+                                alert.showAndWait();
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
                     }
-                    else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
-                        alert.setTitle("Something went wrong");
-                        alert.setHeaderText("Something went wrong");
-                        alert.showAndWait();
+                    winPane.getChildren().add(quit);
+                    primaryStage.setScene(winScene);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Continue?");
+                    alert.setHeaderText("Continue?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.YES) {
+                        doWinAlert = false;
+                        sailingPane.getChildren().add(quit);
+                        primaryStage.setScene(sailingScene);
                     }
                 }
-                winPane.getChildren().add(quit);
-                primaryStage.setScene(winScene);
+                inGame = false;
             } else if (food < 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             }
@@ -1172,36 +1211,52 @@ public class Main extends Application {
             portPane.getChildren().add(quit);
             primaryStage.setScene(portScene);
             if (money <= 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
-                inGame = false;
-                if(!(account.equals(""))) {
-                    boolean addWin = Connection.addWin(finalConn13, account);
-                    if(addWin) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
-                        alert.setTitle("You win");
-                        alert.setHeaderText("You win");
-                        alert.showAndWait();
+                if(doWinAlert) {
+                    if(inGame) {
+                        if (!(account.equals(""))) {
+                            boolean addWin = Connection.addWin(finalConn13, account);
+                            if (addWin) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
+                                alert.setTitle("You win");
+                                alert.setHeaderText("You win");
+                                alert.showAndWait();
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
                     }
-                    else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Something went wrong. A win could not be added to your account stats.", ButtonType.OK);
-                        alert.setTitle("Something went wrong");
-                        alert.setHeaderText("Something went wrong");
-                        alert.showAndWait();
+                    winPane.getChildren().add(quit);
+                    primaryStage.setScene(winScene);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Continue?");
+                    alert.setHeaderText("Continue?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.YES) {
+                        doWinAlert = false;
+                        sailingPane.getChildren().add(quit);
+                        primaryStage.setScene(sailingScene);
                     }
                 }
-                winPane.getChildren().add(quit);
-                primaryStage.setScene(winScene);
+                inGame = false;
             } else if (food < 0) {
-                inGame = false;
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn13, account);
+                    if(inGame) {
+                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                    }
                 }
+                inGame = false;
                 losePane.getChildren().add(quit);
                 primaryStage.setScene(loseScene);
             }

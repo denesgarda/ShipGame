@@ -23,3 +23,5 @@
 - 2.1
     - Fixed no database connection bug - pending
     - Converted to exe
+    - Added MacOS support
+    - Added option to continue after win
