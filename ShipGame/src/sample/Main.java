@@ -1,4 +1,3 @@
-//cuz i feel like it
 package sample;
 
 import javafx.application.Application;
