@@ -28,3 +28,4 @@
     - Added account settings
     - Added option to sign out
     - Added new stats menu
+    - Set button focus to play online

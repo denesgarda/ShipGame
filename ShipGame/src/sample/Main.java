@@ -99,6 +99,11 @@ public class Main extends Application {
         quit.setLayoutX(275);
         quit.setLayoutY(370);
         Pane mainMenuPane = new Pane();
+        Button playOnline = new Button("Play Online");
+        playOnline.setStyle("-fx-font-size: 15px;");
+        playOnline.setLayoutX(150);
+        playOnline.setLayoutY(180);
+        mainMenuPane.getChildren().add(playOnline);
         Button patchNotes = new Button("Patch Notes");
         patchNotes.setStyle("-fx-font-size: 15px;");
         patchNotes.setLayoutX(148);
@@ -114,11 +119,6 @@ public class Main extends Application {
         version.setX(375);
         version.setY(390);
         mainMenuPane.getChildren().add(version);
-        Button playOnline = new Button("Play Online");
-        playOnline.setStyle("-fx-font-size: 15px;");
-        playOnline.setLayoutX(150);
-        playOnline.setLayoutY(180);
-        mainMenuPane.getChildren().add(playOnline);
         Button playOffline = new Button("Play Offline");
         playOffline.setStyle("-fx-font-size: 15px;");
         playOffline.setLayoutX(150);
@@ -442,7 +442,11 @@ public class Main extends Application {
                     "    - Changed to allow feedback only from latest supported version\n" +
                     "    - Converted to exe\n" +
                     "    - Added MacOS support\n" +
-                    "    - Added option to continue after win", ButtonType.OK);
+                    "    - Added option to continue after win\n" +
+                    "    - Added account settings\n" +
+                    "    - Added option to sign out\n" +
+                    "    - Added new stats menu\n" +
+                    "    - Set button focus to play online", ButtonType.OK);
             alert.setTitle("Patch Notes");
             alert.setHeaderText("Patch Notes");
             alert.showAndWait();
