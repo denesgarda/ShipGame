@@ -25,3 +25,5 @@
     - Converted to exe
     - Added MacOS support
     - Added option to continue after win
+    - Added account settings
+    - Added option to sign out

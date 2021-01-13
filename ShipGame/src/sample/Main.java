@@ -254,7 +254,7 @@ public class Main extends Application {
                                     alert.setHeaderText("Activated");
                                     alert.showAndWait();
                                 } else {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid credentials", ButtonType.OK);
+                                    Alert alert = new Alert(Alert.AlertType.ERROR, "Wrong password.", ButtonType.OK);
                                     alert.setTitle("Invalid credentials");
                                     alert.setHeaderText("Invalid credentials");
                                     alert.showAndWait();
@@ -262,7 +262,7 @@ public class Main extends Application {
                             }
                         }
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid credentials", ButtonType.OK);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Account with that username does not exist.", ButtonType.OK);
                         alert.setTitle("Invalid credentials");
                         alert.setHeaderText("Invalid credentials");
                         alert.showAndWait();
