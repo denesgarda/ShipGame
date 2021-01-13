@@ -63,8 +63,8 @@ public class Main extends Application {
                 try {
                     finalConn.close();
                 }
-                catch (SQLException throwables) {
-                    System.out.println(throwables);
+                catch (SQLException ex) {
+                    System.out.println(ex);
                 }
             }));
         }
