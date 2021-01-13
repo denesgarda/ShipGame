@@ -153,6 +153,10 @@ public class Main extends Application {
         howToPlayTitle.setY(150);
         howToPlayTitle.setStyle("-fx-font-size: 25px;");
         howToPlayPane.getChildren().add(howToPlayTitle);
+        Button settings = new Button("Settings");
+        settings.setStyle("-fx-font-size: 15px;");
+        settings.setLayoutX(10);
+        settings.setLayoutY(10);
         Text howToPlayText = new Text("You start off with $2000, and you have to buy, sell, and sail to get $60000.\n" +
                 "                 Each time you sail, your food diminishes by 5.\n" +
                 "             You can also buy food at ports. You cannot sell food.");
@@ -242,6 +246,7 @@ public class Main extends Application {
                                     playOffline.setText("Play");
                                     playOffline.setLayoutX(175);
                                     playOffline.setLayoutY(180);
+                                    mainMenuPane.getChildren().add(settings);
                                     mainMenuPane.getChildren().remove(playOnline);
                                     primaryStage.setScene(mainMenu);
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Online mode has now been activated", ButtonType.OK);
@@ -369,6 +374,46 @@ public class Main extends Application {
                 alert.showAndWait();
             }
             // The Java 8 way to get the response value (with lambda expression).
+        });
+        Pane settingsPane = new Pane();
+        Text accountSettings = new Text("Account Settings");
+        accountSettings.setStyle("-fx-font-size: 25px;");
+        accountSettings.setX(120);
+        accountSettings.setY(150);
+        settingsPane.getChildren().add(accountSettings);
+        Button logOut = new Button("Log Out");
+        logOut.setStyle("-fx-font-size: 15px;");
+        logOut.setLayoutX(165);
+        logOut.setLayoutY(300);
+        settingsPane.getChildren().add(logOut);
+        Scene settingsScene = new Scene(settingsPane, 400, 400);
+        settings.setOnAction(event ->{
+            if(!(account.equals(""))) {
+                settingsPane.getChildren().add(quit);
+                primaryStage.setScene(settingsScene);
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong. Could not access account settings.", ButtonType.OK);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Something went wrong");
+                alert.showAndWait();
+            }
+        });
+        logOut.setOnAction(event ->{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to log out?", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Continue?");
+            alert.setHeaderText("Continue?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
+                account = "";
+                mainMenuPane.getChildren().remove(viewStats);
+                playOffline.setText("Play Offline");
+                playOffline.setLayoutX(150);
+                playOffline.setLayoutY(220);
+                mainMenuPane.getChildren().remove(settings);
+                mainMenuPane.getChildren().add(playOnline);
+                primaryStage.setScene(mainMenu);
+            }
         });
         patchNotes.setOnAction(event -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "- 1.0\n" +
