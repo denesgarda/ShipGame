@@ -27,3 +27,4 @@
     - Added option to continue after win
     - Added account settings
     - Added option to sign out
+    - Added new stats menu

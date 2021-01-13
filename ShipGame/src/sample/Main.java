@@ -450,7 +450,41 @@ public class Main extends Application {
         java.sql.Connection finalConn6 = conn;
         java.sql.Connection finalConn7 = conn;
         java.sql.Connection finalConn10 = conn;
+        Pane statsPane = new Pane();
+        Text accountStats = new Text("Account Stats");
+        accountStats.setStyle("-fx-font-size: 25px;");
+        accountStats.setX(140);
+        accountStats.setY(150);
+        statsPane.getChildren().add(accountStats);
+        Button myStats = new Button("My Stats");
+        myStats.setStyle("-fx-font-size: 15px;");
+        myStats.setLayoutX(5);
+        myStats.setLayoutY(200);
+        statsPane.getChildren().add(myStats);
+        Button friendsLeaderboard = new Button("Friends Leaderboard");
+        friendsLeaderboard.setStyle("-fx-font-size: 15px;");
+        friendsLeaderboard.setLayoutX(85);
+        friendsLeaderboard.setLayoutY(200);
+        statsPane.getChildren().add(friendsLeaderboard);
+        Button globalLeaderboard = new Button("Global Leaderboard");
+        globalLeaderboard.setStyle("-fx-font-size: 15px;");
+        globalLeaderboard.setLayoutX(245);
+        globalLeaderboard.setLayoutY(200);
+        statsPane.getChildren().add(globalLeaderboard);
+        Scene statsScene = new Scene(statsPane, 400, 400);
         viewStats.setOnAction(event -> {
+            if(!(finalConn10 == null)) {
+                statsPane.getChildren().add(quit);
+                primaryStage.setScene(statsScene);
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "You are playing in the offline version of the game. If you want to use online functionalities, check your connection and relaunch the game", ButtonType.OK);
+                alert.setTitle("Network connection error");
+                alert.setHeaderText("Network connection error");
+                alert.showAndWait();
+            }
+        });
+        myStats.setOnAction(event ->{
             if(!(finalConn10 == null)) {
                 String wins = Connection.getWins(finalConn6, account);
                 String losses = Connection.getLosses(finalConn7, account);
@@ -465,6 +499,18 @@ public class Main extends Application {
                 alert.setHeaderText("Network connection error");
                 alert.showAndWait();
             }
+        });
+        friendsLeaderboard.setOnAction(event ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "This feature has not yet been implemented.", ButtonType.OK);
+            alert.setTitle("Coming soon");
+            alert.setHeaderText("Coming soon");
+            alert.showAndWait();
+        });
+        globalLeaderboard.setOnAction(event ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "This feature has not yet been implemented.", ButtonType.OK);
+            alert.setTitle("Coming soon");
+            alert.setHeaderText("Coming soon");
+            alert.showAndWait();
         });
         Random rand = new Random();
         Pane sailingPane = new Pane();
