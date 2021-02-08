@@ -57,7 +57,7 @@ public class Main extends Application {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if(inGame) {
                     if(!(account.equals(""))) {
-                        boolean addLoss = Connection.addLoss(finalConn11, account);
+                        boolean addLoss = Connection.addLoss(finalConn11, account, gameVersion);
                     }
                 }
                 try {
@@ -189,7 +189,7 @@ public class Main extends Application {
         backToMainMenu.setOnAction(event -> {
             if(inGame) {
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn12, account);
+                    boolean addLoss = Connection.addLoss(finalConn12, account, gameVersion);
                 }
             }
             inGame = false;
@@ -652,7 +652,19 @@ public class Main extends Application {
         buyButton.setLayoutY(290);
         howMuchToBuyPane.getChildren().add(buyButton);
         Scene howMuchToBuyScene = new Scene(howMuchToBuyPane, 400, 400);
+        java.sql.Connection finalConn16 = conn;
+        java.sql.Connection finalConn17 = conn;
         playOffline.setOnAction(event -> {
+            if(!(finalConn16 == null)) {
+                if (account != "") {
+                    if(!(gameVersion == Connection.retrieveMaxVersion(finalConn17))) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "You are using either an outdated version of the game or a pre-release version, so new stats will not be added to your account.", ButtonType.OK);
+                        alert.setTitle("Unsupported Version");
+                        alert.setHeaderText("Unsupported Version");
+                        alert.showAndWait();
+                    }
+                }
+            }
             doWinAlert = true;
             inGame = true;
             portPane.getChildren().remove(portInventory);
@@ -714,7 +726,7 @@ public class Main extends Application {
         quit.setOnAction(event -> {
             if(inGame) {
                 if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn12, account);
+                    boolean addLoss = Connection.addLoss(finalConn12, account, gameVersion);
                 }
             }
             inGame = false;
@@ -916,7 +928,7 @@ public class Main extends Application {
             if (money <= 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;
@@ -926,7 +938,7 @@ public class Main extends Application {
                 if(doWinAlert) {
                     if (!(account.equals(""))) {
                         if (inGame) {
-                            boolean addWin = Connection.addWin(finalConn13, account);
+                            boolean addWin = Connection.addWin(finalConn13, account, gameVersion);
                             if (addWin) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
                                 alert.setTitle("You win");
@@ -956,7 +968,7 @@ public class Main extends Application {
             } else if (food < 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;
@@ -1002,7 +1014,7 @@ public class Main extends Application {
             if (money <= 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;
@@ -1012,7 +1024,7 @@ public class Main extends Application {
                 if(doWinAlert) {
                     if (!(account.equals(""))) {
                         if(inGame) {
-                            boolean addWin = Connection.addWin(finalConn13, account);
+                            boolean addWin = Connection.addWin(finalConn13, account, gameVersion);
                             if (addWin) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
                                 alert.setTitle("You win");
@@ -1042,7 +1054,7 @@ public class Main extends Application {
             } else if (food < 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;
@@ -1318,7 +1330,7 @@ public class Main extends Application {
             if (money <= 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;
@@ -1328,7 +1340,7 @@ public class Main extends Application {
                 if(doWinAlert) {
                     if(inGame) {
                         if (!(account.equals(""))) {
-                            boolean addWin = Connection.addWin(finalConn13, account);
+                            boolean addWin = Connection.addWin(finalConn13, account, gameVersion);
                             if (addWin) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "A win has been added to your account stats!", ButtonType.OK);
                                 alert.setTitle("You win");
@@ -1358,7 +1370,7 @@ public class Main extends Application {
             } else if (food < 0) {
                 if(!(account.equals(""))) {
                     if(inGame) {
-                        boolean addLoss = Connection.addLoss(finalConn13, account);
+                        boolean addLoss = Connection.addLoss(finalConn13, account, gameVersion);
                     }
                 }
                 inGame = false;

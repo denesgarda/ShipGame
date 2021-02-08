@@ -1,4 +1,7 @@
 package sample;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -162,36 +165,54 @@ public class Connection {
             return "";
         }
     }
-    public static boolean addWin(java.sql.Connection conn, String username) {
+    public static boolean addWin(java.sql.Connection conn, String username, double gameVersion) {
         try {
-            Statement stmt = null;
-            ResultSet rs = null;
-            stmt = conn.createStatement();
-            String wins = getWins(conn, username);
-            int winsInt = Integer.parseInt(wins);
-            int winsToSet = winsInt + 1;
-            String query = "update shipgame.accountsandstats set wins = " + winsToSet + " where username = " + "\"" + username + "\"";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            int i = preparedStatement.executeUpdate();
-            return true;
+            if(gameVersion == retrieveMaxVersion(conn)) {
+                Statement stmt = null;
+                ResultSet rs = null;
+                stmt = conn.createStatement();
+                String wins = getWins(conn, username);
+                int winsInt = Integer.parseInt(wins);
+                int winsToSet = winsInt + 1;
+                String query = "update shipgame.accountsandstats set wins = " + winsToSet + " where username = " + "\"" + username + "\"";
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                int i = preparedStatement.executeUpdate();
+                return true;
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "You are using either an outdated version of the game or a pre-release version, so the win could not be added to your account.", ButtonType.OK);
+                alert.setTitle("Unsupported Version");
+                alert.setHeaderText("Unsupported Version");
+                alert.showAndWait();
+                return false;
+            }
         }
         catch(SQLException ex) {
             System.out.println(ex);
             return false;
         }
     }
-    public static boolean addLoss(java.sql.Connection conn, String username) {
+    public static boolean addLoss(java.sql.Connection conn, String username, double gameVersion) {
         try {
-            Statement stmt = null;
-            ResultSet rs = null;
-            stmt = conn.createStatement();
-            String losses = getLosses(conn, username);
-            int lossesInt = Integer.parseInt(losses);
-            int lossesToSet = lossesInt + 1;
-            String query = "update shipgame.accountsandstats set losses = " + lossesToSet + " where username = " + "\"" + username + "\"";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            int i = preparedStatement.executeUpdate();
-            return true;
+            if(gameVersion == retrieveMaxVersion(conn)) {
+                Statement stmt = null;
+                ResultSet rs = null;
+                stmt = conn.createStatement();
+                String losses = getLosses(conn, username);
+                int lossesInt = Integer.parseInt(losses);
+                int lossesToSet = lossesInt + 1;
+                String query = "update shipgame.accountsandstats set losses = " + lossesToSet + " where username = " + "\"" + username + "\"";
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                int i = preparedStatement.executeUpdate();
+                return true;
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "You are using either an outdated version of the game or a pre-release version, so the loss could not be added to your account.", ButtonType.OK);
+                alert.setTitle("Unsupported Version");
+                alert.setHeaderText("Unsupported Version");
+                alert.showAndWait();
+                return false;
+            }
         }
         catch(SQLException ex) {
             System.out.println(ex);
