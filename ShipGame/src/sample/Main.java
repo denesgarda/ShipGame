@@ -49,7 +49,7 @@ public class Main extends Application {
         java.sql.Connection conn = null;
         try {
             conn =
-                    DriverManager.getConnection("jdbc:mysql://192.168.1.11:3306/shipgame?user=connector&password=pwd123");
+                    DriverManager.getConnection("jdbc:mysql://98.164.253.104:3306/shipgame?user=connector&password=pwd123");
             //conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), 5000);
             // Do something with the Connection
             java.sql.Connection finalConn = conn;
