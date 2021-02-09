@@ -29,3 +29,4 @@
     - Added option to sign out
     - Added new stats menu
     - Set button focus to play online
+    - Made it so you can only change stats using latest supported version

@@ -446,7 +446,8 @@ public class Main extends Application {
                     "    - Added account settings\n" +
                     "    - Added option to sign out\n" +
                     "    - Added new stats menu\n" +
-                    "    - Set button focus to play online", ButtonType.OK);
+                    "    - Set button focus to play online\n" +
+                    "    - Made it so you can only change stats using latest supported version", ButtonType.OK);
             alert.setTitle("Patch Notes");
             alert.setHeaderText("Patch Notes");
             alert.showAndWait();
