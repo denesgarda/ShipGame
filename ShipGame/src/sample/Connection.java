@@ -2,8 +2,16 @@ package sample;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Connection {
@@ -112,17 +120,55 @@ public class Connection {
             return false;
         }
     }
-    public static boolean insertUser(java.sql.Connection conn, String username, String password) {
+    public static boolean checkEmail(java.sql.Connection conn, String email) {
         try {
             Statement stmt = null;
             ResultSet rs = null;
             stmt = conn.createStatement();
-            String query = "insert into shipgame.accountsandstats (username, password, wins, losses)" + " values (?, ?, ?, ?)";
+            //String query = "select username from shipgame.accountsandstats";
+            String query = "select * from shipgame.accountsandstats where email = " + "\"" + email + "\"";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                String result = rs.getString("email");
+                if(result.equals(email)) {
+                    return true;
+                }
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+        return false;
+    }
+    public static boolean insertUser(java.sql.Connection conn, String username, String password, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "insert into shipgame.accountsandstats (username, password, wins, losses, email)" + " values (?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             preparedStatement.setString(3, "0");
             preparedStatement.setString(4, "0");
+            preparedStatement.setString(5, email);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changePassword(java.sql.Connection conn, String email, String password) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET password = \"" + password + "\" WHERE email = \"" + email + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.executeUpdate();
             return true;
         }
@@ -217,6 +263,47 @@ public class Connection {
         catch(SQLException ex) {
             System.out.println(ex);
             return false;
+        }
+    }
+    public static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+        Properties props = System.getProperties();
+        String host = "smtp.gmail.com";
+        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.user", from);
+        props.put("mail.smtp.password", pass);
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+
+        Session session = Session.getDefaultInstance(props);
+        MimeMessage message = new MimeMessage(session);
+
+        try {
+            message.setFrom(new InternetAddress(from));
+            InternetAddress[] toAddress = new InternetAddress[to.length];
+
+            // To get the array of addresses
+            for( int i = 0; i < to.length; i++ ) {
+                toAddress[i] = new InternetAddress(to[i]);
+            }
+
+            for( int i = 0; i < toAddress.length; i++) {
+                message.addRecipient(Message.RecipientType.TO, toAddress[i]);
+            }
+
+            message.setSubject(subject);
+            message.setText(body);
+            Transport transport = session.getTransport("smtp");
+            transport.connect(host, from, pass);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+        }
+        catch (AddressException ae) {
+            ae.printStackTrace();
+        }
+        catch (MessagingException me) {
+            me.printStackTrace();
         }
     }
 }

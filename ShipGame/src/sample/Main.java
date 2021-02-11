@@ -12,7 +12,12 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import java.sql.*;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 public class Main extends Application {
     double gameVersion = 2.2;
@@ -179,8 +184,13 @@ public class Main extends Application {
         Button SignupOption = new Button("Sign up");
         SignupOption.setStyle("-fx-font-size: 15px;");
         SignupOption.setLayoutX(175);
-        SignupOption.setLayoutY(250);
+        SignupOption.setLayoutY(225);
         loginSignupPane.getChildren().add(SignupOption);
+        Button forgotPasswordOption = new Button("Forgot Password");
+        forgotPasswordOption.setStyle("-fx-font-size: 15px;");
+        forgotPasswordOption.setLayoutX(150);
+        forgotPasswordOption.setLayoutY(300);
+        loginSignupPane.getChildren().add(forgotPasswordOption);
         Scene loginSignupScene = new Scene(loginSignupPane, 400, 400);
         howToPlay.setOnAction(event -> {
             primaryStage.setScene(howToPlayScene);
@@ -272,6 +282,7 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn4 = conn;
         java.sql.Connection finalConn5 = conn;
+        java.sql.Connection finalConn18 = conn;
         SignupOption.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Sign Up");
@@ -306,21 +317,126 @@ public class Main extends Application {
                                 alert.setHeaderText("Password is null");
                                 alert.showAndWait();
                             } else {
-                                boolean successful = Connection.insertUser(finalConn5, username, password);
-                                if (successful) {
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created! Login to use.", ButtonType.OK);
-                                    alert.setTitle("Account created");
-                                    alert.setHeaderText("Account created");
-                                    alert.showAndWait();
-                                } else {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong! Your account could not be created.", ButtonType.OK);
-                                    alert.setTitle("Something went wrong!");
-                                    alert.setHeaderText("Something went wrong!");
-                                    alert.showAndWait();
+                                TextInputDialog dialog3 = new TextInputDialog("");
+                                dialog3.setTitle("Sign Up");
+                                dialog3.setHeaderText("Sign Up");
+                                dialog3.setContentText("Enter email:");
+                                Optional<String> result3 = dialog3.showAndWait();
+                                if (result3.isPresent()) {
+                                    String email = result3.get();
+                                    boolean exists2 = Connection.checkEmail(finalConn18, email);
+                                    if(result3.equals("")) {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
+                                        alert.setTitle("Email is null");
+                                        alert.setHeaderText("Email is null");
+                                        alert.showAndWait();
+                                    }
+                                    else if(exists2) {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR, "Email is already in use by another account", ButtonType.OK);
+                                        alert.setTitle("Email is already in use");
+                                        alert.setHeaderText("Email is already in use");
+                                        alert.showAndWait();
+                                    }
+                                    else if(email.contains("@") && email.contains(".")) {
+                                        boolean successful = Connection.insertUser(finalConn5, username, password, email);
+                                        if (successful) {
+                                            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created! Login to use.", ButtonType.OK);
+                                            alert.setTitle("Account created");
+                                            alert.setHeaderText("Account created");
+                                            alert.showAndWait();
+                                        } else {
+                                            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong! Your account could not be created.", ButtonType.OK);
+                                            alert.setTitle("Something went wrong!");
+                                            alert.setHeaderText("Something went wrong!");
+                                            alert.showAndWait();
+                                        }
+                                    }
+                                    else {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR, "Email is invalid", ButtonType.OK);
+                                        alert.setTitle("Email is invalid");
+                                        alert.setHeaderText("Email is invalid");
+                                        alert.showAndWait();
+                                    }
                                 }
                             }
                         }
                     }
+                }
+            }
+        });
+        java.sql.Connection finalConn19 = conn;
+        java.sql.Connection finalConn20 = conn;
+        forgotPasswordOption.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Forgot Password");
+            dialog.setHeaderText("Forgot Password");
+            dialog.setContentText("Enter email:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String email = result.get();
+                boolean exists = Connection.checkEmail(finalConn19, email);
+                if(exists) {
+                    int randomNumber = rand.nextInt(99999);
+                    String from = "theshipgame.management";
+                    String pass = "theshipgamepassword";
+                    String[] to = {email}; // list of recipient email addresses
+                    String subject = "Your ShipGame code";
+                    String body = "Your code is " + randomNumber + ".";
+                    Connection.sendFromGMail(from, pass, to, subject, body);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "A code has been sent to your email. Once you got it, click next.", ButtonType.NEXT);
+                    alert.setTitle("Code sent");
+                    alert.setHeaderText("Code sent");
+                    alert.showAndWait();
+                    TextInputDialog dialog2 = new TextInputDialog("");
+                    dialog2.setTitle("Code");
+                    dialog2.setHeaderText("Code");
+                    dialog2.setContentText("Enter code:");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        if(Integer.parseInt(result2.get()) == randomNumber) {
+                            TextInputDialog dialog3 = new TextInputDialog("");
+                            dialog3.setTitle("Create password");
+                            dialog3.setHeaderText("Create password");
+                            dialog3.setContentText("Create new password:");
+                            Optional<String> result3 = dialog3.showAndWait();
+                            if (result3.isPresent()) {
+                                String password = result3.get();
+                                if(password.equals("")) {
+                                    Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
+                                    alert2.setTitle("Password is null");
+                                    alert2.setHeaderText("Password is null");
+                                    alert2.showAndWait();
+                                }
+                                else {
+                                    boolean successful = Connection.changePassword(finalConn20, email, password);
+                                    if(successful) {
+                                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Your password has been changed. Login to use.", ButtonType.OK);
+                                        alert2.setTitle("Password changed");
+                                        alert2.setHeaderText("Password changed");
+                                        alert2.showAndWait();
+                                    }
+                                    else {
+                                        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Something went wrong. Your password could not be changed.", ButtonType.OK);
+                                        alert2.setTitle("Something went wrong");
+                                        alert2.setHeaderText("Something went wrong");
+                                        alert2.showAndWait();
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            Alert alert2 = new Alert(Alert.AlertType.ERROR, "The code your entered is incorrect", ButtonType.CLOSE);
+                            alert2.setTitle("Incorrect code");
+                            alert2.setHeaderText("Incorrect code");
+                            alert2.showAndWait();
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Email is not associated with an account", ButtonType.OK);
+                    alert.setTitle("Email does not exist");
+                    alert.setHeaderText("Email does not exist");
+                    alert.showAndWait();
                 }
             }
         });
