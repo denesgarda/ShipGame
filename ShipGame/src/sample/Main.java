@@ -1379,7 +1379,12 @@ public class Main extends Application {
             }
         });
         quitGame.setOnAction(event -> {
-            System.exit(0);
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to quit the game? It's not like you have anything better to do...", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Are you sure you want to quit?");
+            alert.setHeaderText("Are you sure you want to quit?");
+            Optional<ButtonType> result = alert.showAndWait();if (result.get() == ButtonType.YES) {
+                System.exit(0);
+            }
         });
     }
     public static void main(String[] args) {
