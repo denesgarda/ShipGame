@@ -177,6 +177,21 @@ public class Connection {
             return false;
         }
     }
+    public static boolean changeUsername(java.sql.Connection conn, String oldUsername, String newUsername) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET username = \"" + newUsername + "\" WHERE username = \"" + oldUsername + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
     public static String getWins(java.sql.Connection conn, String username) {
         try {
             Statement stmt = null;

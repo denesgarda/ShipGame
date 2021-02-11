@@ -505,8 +505,25 @@ public class Main extends Application {
         Button logOut = new Button("Log Out");
         logOut.setStyle("-fx-font-size: 15px;");
         logOut.setLayoutX(165);
-        logOut.setLayoutY(300);
+        logOut.setLayoutY(175);
         settingsPane.getChildren().add(logOut);
+        Button changeUsername = new Button("Change Username");
+        changeUsername.setStyle("-fx-font-size: 15px;");
+        changeUsername.setLayoutX(135);
+        changeUsername.setLayoutY(225);
+        settingsPane.getChildren().add(changeUsername);
+        //TODO add change password
+        Button changePassword = new Button("Change Password");
+        changePassword.setStyle("-fx-font-size: 15px;");
+        changePassword.setLayoutX(137);
+        changePassword.setLayoutY(275);
+        settingsPane.getChildren().add(changePassword);
+        //TODO add change email
+        Button changeEmail = new Button("Change Email");
+        changeEmail.setStyle("-fx-font-size: 15px;");
+        changeEmail.setLayoutX(148);
+        changeEmail.setLayoutY(325);
+        settingsPane.getChildren().add(changeEmail);
         Scene settingsScene = new Scene(settingsPane, 400, 400);
         settings.setOnAction(event ->{
             if(!(account.equals(""))) {
@@ -534,6 +551,62 @@ public class Main extends Application {
                 mainMenuPane.getChildren().remove(settings);
                 mainMenuPane.getChildren().add(playOnline);
                 primaryStage.setScene(mainMenu);
+            }
+        });
+        java.sql.Connection finalConn21 = conn;
+        java.sql.Connection finalConn22 = conn;
+        changeUsername.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Change username");
+            dialog.setHeaderText("Enter your current username");
+            dialog.setContentText("Current username:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String username = result.get();
+                if(username.equals(account)) {
+                    TextInputDialog dialog2 = new TextInputDialog("");
+                    dialog2.setTitle("Change username");
+                    dialog2.setHeaderText("Enter your new username");
+                    dialog2.setContentText("New username:");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        String newUsername = result2.get();
+                        if(newUsername.equals("")) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
+                            alert.setTitle("Username is null");
+                            alert.setHeaderText("Username is null");
+                            alert.showAndWait();
+                        }
+                        else if(Connection.checkUsername(finalConn22, newUsername)) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Username is already taken", ButtonType.OK);
+                            alert.setTitle("Username is taken");
+                            alert.setHeaderText("Username is taken");
+                            alert.showAndWait();
+                        }
+                        else {
+                            boolean successful = Connection.changeUsername(finalConn21, username, newUsername);
+                            if(successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Your username has been changed to " + newUsername + "."), ButtonType.OK);
+                                alert.setTitle("Username changed");
+                                alert.setHeaderText("Username changed");
+                                alert.showAndWait();
+                                account = newUsername;
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The username you entered is incorrect.", ButtonType.OK);
+                    alert.setTitle("Incorrect username");
+                    alert.setHeaderText("Incorrect username");
+                    alert.showAndWait();
+                }
             }
         });
         patchNotes.setOnAction(event -> {
