@@ -383,48 +383,53 @@ public class Main extends Application {
                     String subject = "Your ShipGame code";
                     String body = "Your code is " + randomNumber + ".";
                     Connection.sendFromGMail(from, pass, to, subject, body);
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "A code has been sent to your email. Once you got it, click next.", ButtonType.NEXT);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "A code has been sent to your email. Once you got it, click next. \nIf you didn't get the code, wait a minute or two. \nIf you still didn't recieve it, check your connection and try again.", ButtonType.NEXT);
                     alert.setTitle("Code sent");
                     alert.setHeaderText("Code sent");
                     alert.showAndWait();
                     TextInputDialog dialog2 = new TextInputDialog("");
                     dialog2.setTitle("Code");
-                    dialog2.setHeaderText("Code");
+                    dialog2.setHeaderText("Enter the code that was sent to your email.");
                     dialog2.setContentText("Enter code:");
                     Optional<String> result2 = dialog2.showAndWait();
                     if (result2.isPresent()) {
-                        if(Integer.parseInt(result2.get()) == randomNumber) {
-                            TextInputDialog dialog3 = new TextInputDialog("");
-                            dialog3.setTitle("Create password");
-                            dialog3.setHeaderText("Create password");
-                            dialog3.setContentText("Create new password:");
-                            Optional<String> result3 = dialog3.showAndWait();
-                            if (result3.isPresent()) {
-                                String password = result3.get();
-                                if(password.equals("")) {
-                                    Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
-                                    alert2.setTitle("Password is null");
-                                    alert2.setHeaderText("Password is null");
-                                    alert2.showAndWait();
-                                }
-                                else {
-                                    boolean successful = Connection.changePassword(finalConn20, email, password);
-                                    if(successful) {
-                                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Your password has been changed. Login to use.", ButtonType.OK);
-                                        alert2.setTitle("Password changed");
-                                        alert2.setHeaderText("Password changed");
+                        try {
+                            if (Integer.parseInt(result2.get()) == randomNumber) {
+                                TextInputDialog dialog3 = new TextInputDialog("");
+                                dialog3.setTitle("Create password");
+                                dialog3.setHeaderText("Create password");
+                                dialog3.setContentText("Create new password:");
+                                Optional<String> result3 = dialog3.showAndWait();
+                                if (result3.isPresent()) {
+                                    String password = result3.get();
+                                    if (password.equals("")) {
+                                        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
+                                        alert2.setTitle("Password is null");
+                                        alert2.setHeaderText("Password is null");
                                         alert2.showAndWait();
-                                    }
-                                    else {
-                                        Alert alert2 = new Alert(Alert.AlertType.ERROR, "Something went wrong. Your password could not be changed.", ButtonType.OK);
-                                        alert2.setTitle("Something went wrong");
-                                        alert2.setHeaderText("Something went wrong");
-                                        alert2.showAndWait();
+                                    } else {
+                                        boolean successful = Connection.changePassword(finalConn20, email, password);
+                                        if (successful) {
+                                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Your password has been changed. Login to use.", ButtonType.OK);
+                                            alert2.setTitle("Password changed");
+                                            alert2.setHeaderText("Password changed");
+                                            alert2.showAndWait();
+                                        } else {
+                                            Alert alert2 = new Alert(Alert.AlertType.ERROR, "Something went wrong. Your password could not be changed.", ButtonType.OK);
+                                            alert2.setTitle("Something went wrong");
+                                            alert2.setHeaderText("Something went wrong");
+                                            alert2.showAndWait();
+                                        }
                                     }
                                 }
+                            } else {
+                                Alert alert2 = new Alert(Alert.AlertType.ERROR, "The code your entered is incorrect", ButtonType.CLOSE);
+                                alert2.setTitle("Incorrect code");
+                                alert2.setHeaderText("Incorrect code");
+                                alert2.showAndWait();
                             }
                         }
-                        else {
+                        catch(Exception e) {
                             Alert alert2 = new Alert(Alert.AlertType.ERROR, "The code your entered is incorrect", ButtonType.CLOSE);
                             alert2.setTitle("Incorrect code");
                             alert2.setHeaderText("Incorrect code");

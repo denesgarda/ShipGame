@@ -32,3 +32,5 @@
 - 2.2
     - Fixed a type
     - Added quit confirmation message
+    - Added email collection system
+    - Added forgot password option
