@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Random;
 
 public class Main extends Application {
-    double gameVersion = 2.1;
+    double gameVersion = 2.2;
     String account = "";
     boolean inGame = false;
     boolean doWinAlert = true;
@@ -114,7 +114,7 @@ public class Main extends Application {
         welcome.setY(150);
         welcome.setStyle("-fx-font-size: 25px;");
         mainMenuPane.getChildren().add(welcome);
-        Text version = new Text("v2.1");
+        Text version = new Text("v2.2");
         version.setStyle("-fx-font-size: 12px;");
         version.setX(375);
         version.setY(390);
@@ -144,7 +144,7 @@ public class Main extends Application {
         howToPlay.setLayoutY(260);
         mainMenuPane.getChildren().add(howToPlay);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
-        primaryStage.setTitle("The Ship Game v2.1");
+        primaryStage.setTitle("The Ship Game v2.2");
         primaryStage.setScene(mainMenu);
         primaryStage.show();
         Pane howToPlayPane = new Pane();
@@ -728,14 +728,26 @@ public class Main extends Application {
         });
         quit.setOnAction(event -> {
             if(inGame) {
-                if(!(account.equals(""))) {
-                    boolean addLoss = Connection.addLoss(finalConn12, account, gameVersion);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to quit to the main menu? You will lose all of your progress.", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Are you sure you want to quit?");
+                alert.setHeaderText("Are you sure you want to quit?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    if(!(account.equals(""))) {
+                        boolean addLoss = Connection.addLoss(finalConn12, account, gameVersion);
+                    }
+                    inGame = false;
+                    mainMenuPane.getChildren().add(quit);
+                    mainMenuPane.getChildren().remove(quit);
+                    primaryStage.setScene(mainMenu);
                 }
             }
-            inGame = false;
-            mainMenuPane.getChildren().add(quit);
-            mainMenuPane.getChildren().remove(quit);
-            primaryStage.setScene(mainMenu);
+            else {
+                inGame = false;
+                mainMenuPane.getChildren().add(quit);
+                mainMenuPane.getChildren().remove(quit);
+                primaryStage.setScene(mainMenu);
+            }
         });
         cancelBuy.setOnAction(event -> {
             portPane.getChildren().add(quit);
@@ -1385,7 +1397,8 @@ public class Main extends Application {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to quit the game? It's not like you have anything better to do...", ButtonType.YES, ButtonType.NO);
             alert.setTitle("Are you sure you want to quit?");
             alert.setHeaderText("Are you sure you want to quit?");
-            Optional<ButtonType> result = alert.showAndWait();if (result.get() == ButtonType.YES) {
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
                 System.exit(0);
             }
         });
