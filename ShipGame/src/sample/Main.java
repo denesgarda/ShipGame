@@ -148,6 +148,11 @@ public class Main extends Application {
         howToPlay.setLayoutX(147);
         howToPlay.setLayoutY(260);
         mainMenuPane.getChildren().add(howToPlay);
+        Button website = new Button("Website");
+        website.setStyle("-fx-font-size: 10px;");
+        website.setLayoutX(342);
+        website.setLayoutY(10);
+        mainMenuPane.getChildren().add(website);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
         primaryStage.setTitle("The Ship Game v2.2");
         primaryStage.setScene(mainMenu);
@@ -217,6 +222,11 @@ public class Main extends Application {
                 alert.setHeaderText("Network connection error");
                 alert.showAndWait();
             }
+        });
+        java.sql.Connection finalConn23 = conn;
+        java.sql.Connection finalConn24 = conn;
+        website.setOnAction(event ->{
+            getHostServices().showDocument("http://theshipgame.ddns.net");
         });
         java.sql.Connection finalConn2 = conn;
         java.sql.Connection finalConn3 = conn;
