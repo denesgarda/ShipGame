@@ -441,7 +441,6 @@ public class Main extends Application {
                     "- 2.1\n" +
                     "    - Changed to allow feedback only from latest supported version\n" +
                     "    - Converted to exe\n" +
-                    "    - Added MacOS support\n" +
                     "    - Added option to continue after win\n" +
                     "    - Added account settings\n" +
                     "    - Added option to sign out\n" +
