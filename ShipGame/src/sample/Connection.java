@@ -120,6 +120,28 @@ public class Connection {
             return false;
         }
     }
+    public static boolean checkEmailViaUsername(java.sql.Connection conn, String username, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select email from shipgame.accountsandstats where username = " + "\"" + username + "\"";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("email");
+            if(result.equals(email)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
     public static boolean checkEmail(java.sql.Connection conn, String email) {
         try {
             Statement stmt = null;
@@ -168,6 +190,36 @@ public class Connection {
             ResultSet rs = null;
             stmt = conn.createStatement();
             String query = "UPDATE shipgame.accountsandstats SET password = \"" + password + "\" WHERE email = \"" + email + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changeEmail(java.sql.Connection conn, String username, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET email = \"" + email + "\" WHERE username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changePasswordViaUsername(java.sql.Connection conn, String username, String password) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET password = \"" + password + "\" WHERE username = \"" + username + "\";";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.executeUpdate();
             return true;

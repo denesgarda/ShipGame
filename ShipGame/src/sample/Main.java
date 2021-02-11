@@ -522,13 +522,11 @@ public class Main extends Application {
         changeUsername.setLayoutX(135);
         changeUsername.setLayoutY(225);
         settingsPane.getChildren().add(changeUsername);
-        //TODO add change password
         Button changePassword = new Button("Change Password");
         changePassword.setStyle("-fx-font-size: 15px;");
         changePassword.setLayoutX(137);
         changePassword.setLayoutY(275);
         settingsPane.getChildren().add(changePassword);
-        //TODO add change email
         Button changeEmail = new Button("Change Email");
         changeEmail.setStyle("-fx-font-size: 15px;");
         changeEmail.setLayoutX(148);
@@ -619,6 +617,114 @@ public class Main extends Application {
                 }
             }
         });
+        java.sql.Connection finalConn25 = conn;
+        changePassword.setOnAction(event -> {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Change password");
+            dialog.setHeaderText("Enter your current password");
+            dialog.setContentText("Current password:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String password = result.get();
+                if(Connection.checkPassword(finalConn25, account, password)) {
+                    TextInputDialog dialog2 = new TextInputDialog("");
+                    dialog2.setTitle("Change password");
+                    dialog2.setHeaderText("Enter your new password");
+                    dialog2.setContentText("New password:");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        String newPassword = result2.get();
+                        if(newPassword.equals("")) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
+                            alert.setTitle("Password is null");
+                            alert.setHeaderText("Password is null");
+                            alert.showAndWait();
+                        }
+                        else {
+                            boolean successful = Connection.changePasswordViaUsername(finalConn21, account, newPassword);
+                            if(successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Your password has been changed."), ButtonType.OK);
+                                alert.setTitle("Password changed");
+                                alert.setHeaderText("Password changed");
+                                alert.showAndWait();
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The password you entered is incorrect.", ButtonType.OK);
+                    alert.setTitle("Incorrect password");
+                    alert.setHeaderText("Incorrect password");
+                    alert.showAndWait();
+                }
+            }
+        });
+        java.sql.Connection finalConn26 = conn;
+        changeEmail.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Change email");
+            dialog.setHeaderText("Enter your current email");
+            dialog.setContentText("Current email:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String email = result.get();
+                if(Connection.checkEmailViaUsername(finalConn26, account, email)) {
+                    TextInputDialog dialog2 = new TextInputDialog("");
+                    dialog2.setTitle("Change email");
+                    dialog2.setHeaderText("Enter your new email");
+                    dialog2.setContentText("New email:");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        String newEmail = result2.get();
+                        if(newEmail.equals("")) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
+                            alert.setTitle("Email is null");
+                            alert.setHeaderText("Email is null");
+                            alert.showAndWait();
+                        }
+                        else if(Connection.checkEmail(finalConn22, newEmail)) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is already in use", ButtonType.OK);
+                            alert.setTitle("Email is already in use by another account");
+                            alert.setHeaderText("Email is already in use by another account");
+                            alert.showAndWait();
+                        }
+                        else if(!(newEmail.contains("@") && newEmail.contains("."))) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is invalid", ButtonType.OK);
+                            alert.setTitle("Invalid email");
+                            alert.setHeaderText("Invalid email");
+                            alert.showAndWait();
+                        }
+                        else {
+                            boolean successful = Connection.changeEmail(finalConn21, account, newEmail);
+                            if(successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Your email has been changed to " + newEmail + "."), ButtonType.OK);
+                                alert.setTitle("Email changed");
+                                alert.setHeaderText("Email changed");
+                                alert.showAndWait();
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The email you entered is incorrect.", ButtonType.OK);
+                    alert.setTitle("Incorrect email");
+                    alert.setHeaderText("Incorrect email");
+                    alert.showAndWait();
+                }
+            }
+        });
         patchNotes.setOnAction(event -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "- 1.0\n" +
                     "    - Made the game\n" +
@@ -652,8 +758,11 @@ public class Main extends Application {
                     "    - Set button focus to play online\n" +
                     "    - Made it so you can only change stats using latest supported version\n" +
                     "- 2.2\n" +
-                    "    - Fixed a type\n" +
-                    "    - Added quit confirmation message", ButtonType.OK);
+                    "    - Fixed a typo\n" +
+                    "    - Added quit confirmation message\n" +
+                    "    - Added email collection system\n" +
+                    "    - Added forgot password option\n" +
+                    "    - Added account configuration options", ButtonType.OK);
             alert.setTitle("Patch Notes");
             alert.setHeaderText("Patch Notes");
             alert.showAndWait();
