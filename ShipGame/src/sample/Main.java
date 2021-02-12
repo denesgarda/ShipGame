@@ -150,9 +150,17 @@ public class Main extends Application {
         mainMenuPane.getChildren().add(howToPlay);
         Button website = new Button("Website");
         website.setStyle("-fx-font-size: 10px;");
-        website.setLayoutX(342);
-        website.setLayoutY(10);
+        website.setLayoutX(10);
+        website.setLayoutY(330);
         mainMenuPane.getChildren().add(website);
+        Button chat = new Button("Chat");
+        chat.setStyle("-fx-font-size: 15px;");
+        chat.setLayoutX(342);
+        chat.setLayoutY(10);
+        Button friends = new Button("Friends");
+        friends.setStyle("-fx-font-size: 15px;");
+        friends.setLayoutX(325);
+        friends.setLayoutY(45);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
         primaryStage.setTitle("The Ship Game v3.0");
         primaryStage.setScene(mainMenu);
@@ -268,6 +276,8 @@ public class Main extends Application {
                                     playOffline.setLayoutY(180);
                                     mainMenuPane.getChildren().add(settings);
                                     mainMenuPane.getChildren().remove(playOnline);
+                                    mainMenuPane.getChildren().add(friends);
+                                    mainMenuPane.getChildren().add(chat);
                                     primaryStage.setScene(mainMenu);
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Online mode has now been activated", ButtonType.OK);
                                     alert.setTitle("Activated");
@@ -536,6 +546,9 @@ public class Main extends Application {
         settings.setOnAction(event ->{
             if(!(account.equals(""))) {
                 settingsPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    settingsPane.getChildren().add(chat);
+                }
                 primaryStage.setScene(settingsScene);
             }
             else {
@@ -557,6 +570,8 @@ public class Main extends Application {
                 playOffline.setLayoutX(150);
                 playOffline.setLayoutY(220);
                 mainMenuPane.getChildren().remove(settings);
+                mainMenuPane.getChildren().remove(friends);
+                mainMenuPane.getChildren().remove(chat);
                 mainMenuPane.getChildren().add(playOnline);
                 primaryStage.setScene(mainMenu);
             }
@@ -795,6 +810,9 @@ public class Main extends Application {
         viewStats.setOnAction(event -> {
             if(!(finalConn10 == null)) {
                 statsPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    statsPane.getChildren().add(chat);
+                }
                 primaryStage.setScene(statsScene);
             }
             else {
@@ -1011,6 +1029,9 @@ public class Main extends Application {
             portPane.getChildren().add(portInventory);
             portPane.getChildren().add(yourInventory);
             sailingPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                sailingPane.getChildren().add(chat);
+            }
             primaryStage.setScene(sailingScene);
         /*Pane testPane = new Pane();
         Text testText = new Text("test text");
@@ -1026,6 +1047,9 @@ public class Main extends Application {
             portPane.getChildren().add(portInventory);
             portPane.getChildren().add(yourInventory);
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         buy.setOnAction(event -> {
@@ -1037,6 +1061,9 @@ public class Main extends Application {
             moneyBeforeBuy.setLayoutY(10);
             howMuchToBuyPane.getChildren().add(moneyBeforeBuy);
             whatToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                whatToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(whatToBuyScene);
         });
         quit.setOnAction(event -> {
@@ -1051,6 +1078,9 @@ public class Main extends Application {
                     }
                     inGame = false;
                     mainMenuPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        mainMenuPane.getChildren().add(chat);
+                    }
                     mainMenuPane.getChildren().remove(quit);
                     primaryStage.setScene(mainMenu);
                 }
@@ -1058,21 +1088,33 @@ public class Main extends Application {
             else {
                 inGame = false;
                 mainMenuPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    mainMenuPane.getChildren().add(chat);
+                }
                 mainMenuPane.getChildren().remove(quit);
                 primaryStage.setScene(mainMenu);
             }
         });
         cancelBuy.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         cancelBuy2.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         buyCotton.setOnAction(event -> {
             whatToBuyEnd = ("cotton");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / cottonPrice));
             if (money < cottonPrice) {
@@ -1091,6 +1133,9 @@ public class Main extends Application {
         buySteel.setOnAction(event -> {
             whatToBuyEnd = ("steel");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / steelPrice));
             if (money < steelPrice) {
@@ -1109,6 +1154,9 @@ public class Main extends Application {
         buyGold.setOnAction(event -> {
             whatToBuyEnd = ("gold");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / goldPrice));
             if (money < goldPrice) {
@@ -1127,6 +1175,9 @@ public class Main extends Application {
         buyDiamond.setOnAction(event -> {
             whatToBuyEnd = ("diamond");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / diamondPrice));
             if (money < diamondPrice) {
@@ -1145,6 +1196,9 @@ public class Main extends Application {
         buyWood.setOnAction(event -> {
             whatToBuyEnd = ("wood");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / woodPrice));
             if (money < woodPrice) {
@@ -1163,6 +1217,9 @@ public class Main extends Application {
         buyFood.setOnAction(event -> {
             whatToBuyEnd = ("food");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / foodPrice));
             if (money < foodPrice) {
@@ -1252,6 +1309,9 @@ public class Main extends Application {
                 portPane.getChildren().add(yourInventory);
             }
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
             if (money <= 0) {
                 if(!(account.equals(""))) {
@@ -1261,6 +1321,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1281,6 +1344,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1289,6 +1355,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1301,6 +1370,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
@@ -1337,6 +1409,9 @@ public class Main extends Application {
             portInventory.setY(80);
             portPane.getChildren().add(portInventory);
             sailingPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                sailingPane.getChildren().add(chat);
+            }
             primaryStage.setScene(sailingScene);
             food = oldFood - 5;
             if (money <= 0) {
@@ -1347,6 +1422,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1367,6 +1445,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1375,6 +1456,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1387,6 +1471,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
@@ -1437,6 +1524,9 @@ public class Main extends Application {
             moneyBeforeSell.setLayoutY(10);
             howMuchToSellPane.getChildren().add(moneyBeforeSell);
             whatToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                whatToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(whatToSellScene);
         });
         Text howMuchToSellText = new Text("How much do you want to sell?");
@@ -1484,6 +1574,9 @@ public class Main extends Application {
         sellCotton.setOnAction(event -> {
             whatToSellEnd = "cotton";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(cotton);
             if (cotton == 0) {
@@ -1502,6 +1595,9 @@ public class Main extends Application {
         sellSteel.setOnAction(event -> {
             whatToSellEnd = "steel";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(steel);
             if (steel == 0) {
@@ -1520,6 +1616,9 @@ public class Main extends Application {
         sellGold.setOnAction(event -> {
             whatToSellEnd = "gold";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(gold);
             if (gold == 0) {
@@ -1538,6 +1637,9 @@ public class Main extends Application {
         sellDiamond.setOnAction(event -> {
             whatToSellEnd = "diamond";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(diamond);
             if (diamond == 0) {
@@ -1556,6 +1658,9 @@ public class Main extends Application {
         sellWood.setOnAction(event -> {
             whatToSellEnd = "wood";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(wood);
             if (wood == 0) {
@@ -1573,10 +1678,16 @@ public class Main extends Application {
         });
         cancelSell.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         cancelSell2.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         sellButton2.setOnAction(event -> {
@@ -1654,6 +1765,9 @@ public class Main extends Application {
                 portPane.getChildren().add(yourInventory);
             }
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
             if (money <= 0) {
                 if(!(account.equals(""))) {
@@ -1663,6 +1777,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1683,6 +1800,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1691,6 +1811,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1703,6 +1826,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
