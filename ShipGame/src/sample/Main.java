@@ -20,7 +20,7 @@ import javax.mail.internet.*;
 import javax.activation.*;
 
 public class Main extends Application {
-    double gameVersion = 2.2;
+    double gameVersion = 3.0;
     String account = "";
     boolean inGame = false;
     boolean doWinAlert = true;
@@ -119,7 +119,7 @@ public class Main extends Application {
         welcome.setY(150);
         welcome.setStyle("-fx-font-size: 25px;");
         mainMenuPane.getChildren().add(welcome);
-        Text version = new Text("v2.2");
+        Text version = new Text("v3.0");
         version.setStyle("-fx-font-size: 12px;");
         version.setX(375);
         version.setY(390);
@@ -154,7 +154,7 @@ public class Main extends Application {
         website.setLayoutY(10);
         mainMenuPane.getChildren().add(website);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
-        primaryStage.setTitle("The Ship Game v2.2");
+        primaryStage.setTitle("The Ship Game v3.0");
         primaryStage.setScene(mainMenu);
         primaryStage.show();
         Pane howToPlayPane = new Pane();
