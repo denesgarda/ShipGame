@@ -656,6 +656,7 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn21 = conn;
         java.sql.Connection finalConn22 = conn;
+        java.sql.Connection finalConn27 = conn;
         changeUsername.setOnAction(event ->{
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Change username");
@@ -692,6 +693,13 @@ public class Main extends Application {
                                 alert.setHeaderText("Username changed");
                                 alert.showAndWait();
                                 account = newUsername;
+                                String from = "theshipgame.management";
+                                String pass = "theshipgamepassword";
+                                String email = Connection.getEmailViaUsername(finalConn27, account);
+                                String[] to = {email}; // list of recipient email addresses
+                                String subject = "Username changed";
+                                String body = "Your username has been changed from " + username + " to " + newUsername + ".";
+                                Connection.sendFromGMail(from, pass, to, subject, body);
                             }
                             else {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
@@ -712,10 +720,9 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn25 = conn;
         changePassword.setOnAction(event -> {
-            TextInputDialog dialog = new TextInputDialog("");
+            PasswordDialog dialog = new PasswordDialog();
             dialog.setTitle("Change password");
             dialog.setHeaderText("Enter your current password");
-            dialog.setContentText("Current password:");
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String password = result.get();

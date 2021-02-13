@@ -76,6 +76,23 @@ public class Connection {
             return null;
         }
     }
+    public static String getEmailViaUsername(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select email from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("email");
+            return result;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
     public static boolean checkUsername(java.sql.Connection conn, String username) {
         try {
             Statement stmt = null;
