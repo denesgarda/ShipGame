@@ -41,3 +41,4 @@
     - Bug Fixes
     - Made it so passwords are dots
     - Added delete account option
+    - Small changes
