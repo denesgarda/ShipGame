@@ -374,6 +374,12 @@ public class Main extends Application {
                                     else if(email.contains("@") && email.contains(".")) {
                                         boolean successful = Connection.insertUser(finalConn5, username, password, email);
                                         if (successful) {
+                                            String from = "theshipgame.management";
+                                            String pass = "theshipgamepassword";
+                                            String[] to = {email}; // list of recipient email addresses
+                                            String subject = "Welcome to the Ship Game!";
+                                            String body = "Welcome to the ship game. Thank you for creating an account to play with!";
+                                            Connection.sendFromGMail(from, pass, to, subject, body);
                                             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created! Login to use.", ButtonType.OK);
                                             alert.setTitle("Account created");
                                             alert.setHeaderText("Account created");
@@ -693,13 +699,6 @@ public class Main extends Application {
                                 alert.setHeaderText("Username changed");
                                 alert.showAndWait();
                                 account = newUsername;
-                                String from = "theshipgame.management";
-                                String pass = "theshipgamepassword";
-                                String email = Connection.getEmailViaUsername(finalConn27, account);
-                                String[] to = {email}; // list of recipient email addresses
-                                String subject = "Username changed";
-                                String body = "Your username has been changed from " + username + " to " + newUsername + ".";
-                                Connection.sendFromGMail(from, pass, to, subject, body);
                             }
                             else {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
