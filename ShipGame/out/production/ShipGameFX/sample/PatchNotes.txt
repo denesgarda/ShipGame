@@ -35,3 +35,6 @@
     - Added email collection system
     - Added forgot password option
     - Added account configuration options
+- 3.0
+    - Added Friends tab
+    - Added Chat tab
