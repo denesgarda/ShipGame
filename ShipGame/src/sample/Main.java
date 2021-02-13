@@ -1,15 +1,30 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import javafx.event.ActionEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
+
 import java.sql.*;
 import java.util.Optional;
 import java.util.Properties;
@@ -51,6 +66,7 @@ public class Main extends Application {
     String[] portNames = {"Havenbrorough", "Woodham", "Coldfield", "Prumore", "Nurith", "Hapool", "Glilsall", "Vondon", "Zorothin", "Aresset", "Okphis", "Drakta", "Verpbury", "Umul", "Blora", "Blora"};
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Stage chatStage = new Stage();
         java.sql.Connection conn = null;
         try {
             conn =
@@ -246,7 +262,7 @@ public class Main extends Application {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String username = result.get();
-                if (username.equals("")) {
+                if (username.isBlank()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                     alert.setTitle("Username is null");
                     alert.setHeaderText("Username is null");
@@ -254,14 +270,13 @@ public class Main extends Application {
                 } else {
                     boolean successful = Connection.checkUsername(finalConn2, username);
                     if (successful) {
-                        TextInputDialog dialog2 = new TextInputDialog("");
+                        PasswordDialog dialog2 = new PasswordDialog();
                         dialog2.setTitle("Login");
-                        dialog2.setHeaderText("Login");
-                        dialog2.setContentText("Password:");
+                        dialog2.setHeaderText("Enter Password");
                         Optional<String> result2 = dialog2.showAndWait();
                         if (result2.isPresent()) {
                             String password = result2.get();
-                            if (password.equals("")) {
+                            if (password.isBlank()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                 alert.setTitle("Password is null");
                                 alert.setHeaderText("Password is null");
@@ -311,7 +326,7 @@ public class Main extends Application {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String username = result.get();
-                if (username.equals("")) {
+                if (username.isBlank()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                     alert.setTitle("Username is null");
                     alert.setHeaderText("Username is null");
@@ -324,14 +339,13 @@ public class Main extends Application {
                         alert.setHeaderText("Username is already taken");
                         alert.showAndWait();
                     } else {
-                        TextInputDialog dialog2 = new TextInputDialog("");
+                        PasswordDialog dialog2 = new PasswordDialog();
                         dialog2.setTitle("Sign Up");
-                        dialog2.setHeaderText("Sign Up");
-                        dialog2.setContentText("Create Password:");
+                        dialog2.setHeaderText("Create Password");
                         Optional<String> result2 = dialog2.showAndWait();
                         if (result2.isPresent()) {
                             String password = result2.get();
-                            if (password.equals("")) {
+                            if (password.isBlank()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                 alert.setTitle("Password is null");
                                 alert.setHeaderText("Password is null");
@@ -345,7 +359,7 @@ public class Main extends Application {
                                 if (result3.isPresent()) {
                                     String email = result3.get();
                                     boolean exists2 = Connection.checkEmail(finalConn18, email);
-                                    if(result3.equals("")) {
+                                    if(email.isBlank()) {
                                         Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
                                         alert.setTitle("Email is null");
                                         alert.setHeaderText("Email is null");
@@ -415,14 +429,13 @@ public class Main extends Application {
                     if (result2.isPresent()) {
                         try {
                             if (Integer.parseInt(result2.get()) == randomNumber) {
-                                TextInputDialog dialog3 = new TextInputDialog("");
+                                PasswordDialog dialog3 = new PasswordDialog();
                                 dialog3.setTitle("Create password");
-                                dialog3.setHeaderText("Create password");
-                                dialog3.setContentText("Create new password:");
+                                dialog3.setHeaderText("Create new password");
                                 Optional<String> result3 = dialog3.showAndWait();
                                 if (result3.isPresent()) {
                                     String password = result3.get();
-                                    if (password.equals("")) {
+                                    if (password.isBlank()) {
                                         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                         alert2.setTitle("Password is null");
                                         alert2.setHeaderText("Password is null");
@@ -480,7 +493,7 @@ public class Main extends Application {
                     Optional<String> result = dialog.showAndWait();
                     if (result.isPresent()) {
                         String feedbackToSend = result.get();
-                        if (feedbackToSend.equals("")) {
+                        if (feedbackToSend.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.WARNING, "Feedback was not recorded as input was null.", ButtonType.OK);
                             alert.setTitle("Feedback was not recorded");
                             alert.setHeaderText("Feedback was not recorded");
@@ -515,6 +528,71 @@ public class Main extends Application {
                 alert.showAndWait();
             }
             // The Java 8 way to get the response value (with lambda expression).
+        });
+        Button messageSendButton = new Button("Send");
+        TextField messageField = new TextField();
+        chat.setOnAction(event ->{
+            chatStage.show();
+            chatStage.setTitle("The Ship Game Chat");
+            Pane chatPane = new Pane();
+            Text chatTitle = new Text("Party Chat");
+            chatTitle.setStyle("-fx-font-size: 25px;");
+            chatTitle.setY(30);
+            chatTitle.setX(150);
+            chatPane.getChildren().add(chatTitle);
+            Scene chatScene = new Scene(chatPane, 400, 400);
+            Line line1 = new Line(10, 45, 390, 45);
+            line1.setStroke(Color.GRAY);
+            chatPane.getChildren().add(line1);
+            Line line2 = new Line(10, 340, 390, 340);
+            line2.setStroke(Color.GRAY);
+            chatPane.getChildren().add(line2);
+            messageField.setLayoutX(20);
+            messageField.setLayoutY(350);
+            messageField.setMinWidth(300);
+            messageField.setMaxWidth(300);
+            chatPane.getChildren().add(messageField);
+            messageSendButton.setStyle("-fx-font-size: 12px;");
+            messageSendButton.setLayoutX(330);
+            messageSendButton.setLayoutY(350);
+            chatPane.getChildren().add(messageSendButton);
+            chatStage.setScene(chatScene);
+            messageField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    if(keyEvent.getCode() == KeyCode.ENTER) {
+                        String message = messageField.getText();
+                        messageField.setText("");
+                        if(!message.isBlank()) {
+                            System.out.println(message);
+                        }
+                    }
+                }
+            });
+        });
+        messageSendButton.setOnAction(event ->{
+            String message = messageField.getText();
+            messageField.setText("");
+            if(!message.isBlank()) {
+                System.out.println(message);
+            }
+        });
+        Platform.setImplicitExit(false);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to quit the game? It's not like you have anything better to do...", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Are you sure you want to quit?");
+                alert.setHeaderText("Are you sure you want to quit?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    chatStage.close();
+                    System.exit(0);
+                }
+                else {
+                    event.consume();
+                }
+            }
         });
         Pane settingsPane = new Pane();
         Text accountSettings = new Text("Account Settings");
@@ -594,7 +672,7 @@ public class Main extends Application {
                     Optional<String> result2 = dialog2.showAndWait();
                     if (result2.isPresent()) {
                         String newUsername = result2.get();
-                        if(newUsername.equals("")) {
+                        if(newUsername.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                             alert.setTitle("Username is null");
                             alert.setHeaderText("Username is null");
@@ -642,14 +720,13 @@ public class Main extends Application {
             if (result.isPresent()) {
                 String password = result.get();
                 if(Connection.checkPassword(finalConn25, account, password)) {
-                    TextInputDialog dialog2 = new TextInputDialog("");
+                    PasswordDialog dialog2 = new PasswordDialog();
                     dialog2.setTitle("Change password");
-                    dialog2.setHeaderText("Enter your new password");
-                    dialog2.setContentText("New password:");
+                    dialog2.setHeaderText("Create new password");
                     Optional<String> result2 = dialog2.showAndWait();
                     if (result2.isPresent()) {
                         String newPassword = result2.get();
-                        if(newPassword.equals("")) {
+                        if(newPassword.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                             alert.setTitle("Password is null");
                             alert.setHeaderText("Password is null");
@@ -697,7 +774,7 @@ public class Main extends Application {
                     Optional<String> result2 = dialog2.showAndWait();
                     if (result2.isPresent()) {
                         String newEmail = result2.get();
-                        if(newEmail.equals("")) {
+                        if(newEmail.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
                             alert.setTitle("Email is null");
                             alert.setHeaderText("Email is null");
