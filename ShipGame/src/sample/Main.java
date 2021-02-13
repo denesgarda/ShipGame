@@ -124,6 +124,7 @@ public class Main extends Application {
         playOnline.setStyle("-fx-font-size: 15px;");
         playOnline.setLayoutX(150);
         playOnline.setLayoutY(180);
+        playOnline.setDefaultButton(true);
         mainMenuPane.getChildren().add(playOnline);
         Button patchNotes = new Button("Patch Notes");
         patchNotes.setStyle("-fx-font-size: 15px;");
@@ -291,6 +292,7 @@ public class Main extends Application {
                                     playOffline.setLayoutY(180);
                                     mainMenuPane.getChildren().add(settings);
                                     mainMenuPane.getChildren().remove(playOnline);
+                                    playOffline.setDefaultButton(true);
                                     mainMenuPane.getChildren().add(friends);
                                     mainMenuPane.getChildren().add(chat);
                                     primaryStage.setScene(mainMenu);
@@ -374,12 +376,12 @@ public class Main extends Application {
                                     else if(email.contains("@") && email.contains(".")) {
                                         boolean successful = Connection.insertUser(finalConn5, username, password, email);
                                         if (successful) {
-                                            String from = "theshipgame.management";
+                                            /*String from = "theshipgame.management";
                                             String pass = "theshipgamepassword";
                                             String[] to = {email}; // list of recipient email addresses
                                             String subject = "Welcome to the Ship Game!";
                                             String body = "Welcome to the ship game. Thank you for creating an account to play with!";
-                                            Connection.sendFromGMail(from, pass, to, subject, body);
+                                            Connection.sendFromGMail(from, pass, to, subject, body);*/
                                             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created! Login to use.", ButtonType.OK);
                                             alert.setTitle("Account created");
                                             alert.setHeaderText("Account created");
@@ -614,18 +616,23 @@ public class Main extends Application {
         Button changeUsername = new Button("Change Username");
         changeUsername.setStyle("-fx-font-size: 15px;");
         changeUsername.setLayoutX(135);
-        changeUsername.setLayoutY(225);
+        changeUsername.setLayoutY(215);
         settingsPane.getChildren().add(changeUsername);
         Button changePassword = new Button("Change Password");
         changePassword.setStyle("-fx-font-size: 15px;");
         changePassword.setLayoutX(137);
-        changePassword.setLayoutY(275);
+        changePassword.setLayoutY(255);
         settingsPane.getChildren().add(changePassword);
         Button changeEmail = new Button("Change Email");
         changeEmail.setStyle("-fx-font-size: 15px;");
         changeEmail.setLayoutX(148);
-        changeEmail.setLayoutY(325);
+        changeEmail.setLayoutY(295);
         settingsPane.getChildren().add(changeEmail);
+        Button deleteAccount = new Button("Delete Account");
+        deleteAccount.setStyle("-fx-font-size: 15px;");
+        deleteAccount.setLayoutX(144);
+        deleteAccount.setLayoutY(335);
+        settingsPane.getChildren().add(deleteAccount);
         Scene settingsScene = new Scene(settingsPane, 400, 400);
         settings.setOnAction(event ->{
             if(!(account.equals(""))) {
@@ -642,6 +649,71 @@ public class Main extends Application {
                 alert.showAndWait();
             }
         });
+        java.sql.Connection finalConn28 = conn;
+        java.sql.Connection finalConn29 = conn;
+        java.sql.Connection finalConn30 = conn;
+        deleteAccount.setOnAction(event ->{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete you're account?", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Delete Account");
+            alert.setHeaderText("Continue?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
+                TextInputDialog dialog2 = new TextInputDialog("");
+                dialog2.setTitle("Delete Account");
+                dialog2.setHeaderText("Why are you deleting your account? Please enter any reason as we'd love to improve!");
+                dialog2.setContentText("Reason:");
+                Optional<String> result2 = dialog2.showAndWait();
+                if (result2.isPresent()) {
+                    String reason = result2.get();
+                    PasswordDialog dialog3 = new PasswordDialog();
+                    dialog3.setTitle("Delete Account");
+                    dialog3.setHeaderText("Type your password to continue");
+                    Optional<String> result3 = dialog3.showAndWait();
+                    if (result3.isPresent()) {
+                        String password = result3.get();
+                        if(Connection.checkPassword(finalConn28, account, password)) {
+                            Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to continue? Once you click yes, there's no going back. All of your data will be lost!", ButtonType.YES, ButtonType.NO);
+                            alert4.setTitle("Delete Account");
+                            alert4.setHeaderText("Continue?");
+                            Optional<ButtonType> result4 = alert4.showAndWait();
+                            if(result4.get() == ButtonType.YES) {
+                                Connection.insertDeleteReason(finalConn29, account, reason);
+                                boolean successful = Connection.deleteUser(finalConn30, account);
+                                if(successful) {
+                                    account = "";
+                                    mainMenuPane.getChildren().remove(viewStats);
+                                    playOffline.setText("Play Offline");
+                                    playOffline.setLayoutX(150);
+                                    playOffline.setLayoutY(220);
+                                    mainMenuPane.getChildren().remove(settings);
+                                    mainMenuPane.getChildren().remove(friends);
+                                    mainMenuPane.getChildren().remove(chat);
+                                    playOffline.setDefaultButton(false);
+                                    mainMenuPane.getChildren().add(playOnline);
+                                    primaryStage.setScene(mainMenu);
+                                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "We're sad to see you go... Your account has been deleted.", ButtonType.OK);
+                                    alert2.setTitle("Delete Account");
+                                    alert2.setHeaderText("Account Deleted");
+                                    alert2.showAndWait();
+                                }
+                                else {
+                                    Alert alert2 = new Alert(Alert.AlertType.ERROR, "Something went wrong. Your account could not be deleted.", ButtonType.OK);
+                                    alert2.setTitle("Something went wrong");
+                                    alert2.setHeaderText("Something went wrong");
+                                    alert2.showAndWait();
+                                }
+                            }
+                        }
+                        else {
+                            Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is incorrect", ButtonType.OK);
+                            alert2.setTitle("Incorrect Password");
+                            alert2.setHeaderText("Incorrect Password");
+                            alert2.showAndWait();
+                        }
+                    }
+                }
+            }
+        });
         logOut.setOnAction(event ->{
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to log out?", ButtonType.YES, ButtonType.NO);
             alert.setTitle("Continue?");
@@ -655,6 +727,7 @@ public class Main extends Application {
                 playOffline.setLayoutY(220);
                 mainMenuPane.getChildren().remove(settings);
                 mainMenuPane.getChildren().remove(friends);
+                playOffline.setDefaultButton(false);
                 mainMenuPane.getChildren().remove(chat);
                 mainMenuPane.getChildren().add(playOnline);
                 primaryStage.setScene(mainMenu);

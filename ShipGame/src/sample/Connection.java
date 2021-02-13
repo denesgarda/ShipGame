@@ -201,6 +201,38 @@ public class Connection {
             return false;
         }
     }
+    public static boolean insertDeleteReason(java.sql.Connection conn, String account, String reason) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "insert into shipgame.deletereason (account, reason)" + " values (?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, account);
+            preparedStatement.setString(2, reason);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean deleteUser(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "DELETE FROM shipgame.accountsandstats WHERE username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
     public static boolean changePassword(java.sql.Connection conn, String email, String password) {
         try {
             Statement stmt = null;
