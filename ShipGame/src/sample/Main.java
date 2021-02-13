@@ -502,7 +502,7 @@ public class Main extends Application {
                     }
                 }
                 else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, ("You are not using the latest supported version of the game. You are using either an outdated version, or a pre-release version. Please use v." + Connection.retrieveMaxVersion(finalConn15) + "."), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, ("You are not using the latest supported version of the game. You are using either an outdated version, or a pre-release version. Please use v" + Connection.retrieveMaxVersion(finalConn15) + "."), ButtonType.OK);
                     alert.setTitle("Unsupported version");
                     alert.setHeaderText("Unsupported version");
                     alert.showAndWait();
