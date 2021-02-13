@@ -3,12 +3,14 @@ package sample;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -64,11 +66,15 @@ public class Main extends Application {
             // Do something with the Connection
             java.sql.Connection finalConn = conn;
             java.sql.Connection finalConn11 = conn;
+            java.sql.Connection finalConn32 = conn;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if(inGame) {
                     if(!(account.equals(""))) {
                         boolean addLoss = Connection.addLoss(finalConn11, account, gameVersion);
                     }
+                }
+                if(!(account.equals(""))) {
+                    Connection.changeStatusViaUsername(finalConn32, account, 0);
                 }
                 try {
                     finalConn.close();
@@ -244,6 +250,7 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn2 = conn;
         java.sql.Connection finalConn3 = conn;
+        java.sql.Connection finalConn31 = conn;
         loginOption.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Login");
@@ -285,6 +292,7 @@ public class Main extends Application {
                                     mainMenuPane.getChildren().add(friends);
                                     mainMenuPane.getChildren().add(chat);
                                     primaryStage.setScene(mainMenu);
+                                    Connection.changeStatusViaUsername(finalConn31, account, 1);
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Online mode has now been activated", ButtonType.OK);
                                     alert.setTitle("Activated");
                                     alert.setHeaderText("Activated");
@@ -574,6 +582,21 @@ public class Main extends Application {
                 System.out.println(message);
             }
         });
+        VBox friendsVBox = new VBox();
+        Text friendsVBoxTitle = new Text("Friends");
+        friendsVBoxTitle.setStyle("-fx-font-size: 25px;");
+        friendsVBox.getChildren().add(friendsVBoxTitle);
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        friendsVBox.getChildren().add(separator);
+        Button backButton = new Button("Back");
+        friendsVBox.getChildren().add(backButton);
+        Scene friendsScene = new Scene(friendsVBox, 400, 400);
+        friends.setOnAction(event ->{
+            primaryStage.setScene(friendsScene);
+        });
+        backButton.setOnAction(event ->{
+            primaryStage.setScene(mainMenu);
+        });
         Platform.setImplicitExit(false);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -669,6 +692,7 @@ public class Main extends Application {
                                 Connection.insertDeleteReason(finalConn29, account, reason);
                                 boolean successful = Connection.deleteUser(finalConn30, account);
                                 if(successful) {
+                                    Connection.changeStatusViaUsername(finalConn31, account, 0);
                                     account = "";
                                     mainMenuPane.getChildren().remove(viewStats);
                                     playOffline.setText("Play Offline");
@@ -709,6 +733,7 @@ public class Main extends Application {
             alert.setHeaderText("Continue?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.YES) {
+                Connection.changeStatusViaUsername(finalConn31, account, 0);
                 account = "";
                 mainMenuPane.getChildren().remove(viewStats);
                 playOffline.setText("Play Offline");
