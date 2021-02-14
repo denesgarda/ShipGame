@@ -76,6 +76,47 @@ public class Connection {
             return null;
         }
     }
+    public static String[] getFriends(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select friends from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("friends");
+            String[] friends = ArrayModification.toStringArray(result);
+            return friends;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
+    public static boolean checkStatus(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select status from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("status");
+            if(result.equals("1")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            return false;
+        }
+    }
     public static String getEmailViaUsername(java.sql.Connection conn, String username) {
         try {
             Statement stmt = null;

@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,6 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
@@ -30,6 +32,7 @@ public class Main extends Application {
     String account = "";
     boolean inGame = false;
     boolean doWinAlert = true;
+    int friendsNumber = 0;
 
     Random rand = new Random();
     int money = 2000;
@@ -585,16 +588,69 @@ public class Main extends Application {
         VBox friendsVBox = new VBox();
         Text friendsVBoxTitle = new Text("Friends");
         friendsVBoxTitle.setStyle("-fx-font-size: 25px;");
-        friendsVBox.getChildren().add(friendsVBoxTitle);
         Separator separator = new Separator(Orientation.HORIZONTAL);
-        friendsVBox.getChildren().add(separator);
         Button backButton = new Button("Back");
-        friendsVBox.getChildren().add(backButton);
+        backButton.setStyle("-fx-font-size: 15px;");
+        Button addFriend = new Button("Add Friend");
+        addFriend.setStyle("-fx-font-size: 15px;");
+        Separator separator2 = new Separator(Orientation.HORIZONTAL);
+        Separator separator3 = new Separator(Orientation.HORIZONTAL);
         Scene friendsScene = new Scene(friendsVBox, 400, 400);
+        java.sql.Connection finalConn33 = conn;
+        java.sql.Connection finalConn34 = conn;
         friends.setOnAction(event ->{
+            friendsVBox.getChildren().add(friendsVBoxTitle);
+            friendsVBox.getChildren().add(separator);
+            String[] friendsList = Connection.getFriends(finalConn33, account);
+            if(friendsList.length > 1) {
+                for(int i = 0; i < friendsList.length; i++) {
+                    String friend = friendsList[i];
+                    if(Connection.checkStatus(finalConn34, friend)) {
+                        friend += " - ONLINE";
+                    }
+                    Text specific = new Text(friend);
+                    specific.setStyle("-fx-font-size: 15px;");
+                    friendsVBox.getChildren().add(specific);
+                }
+            }
+            else {
+                Text noFriends = new Text("You have no friends :(");
+                noFriends.setStyle("-fx-font-size: 15px;");
+                friendsVBox.getChildren().add(noFriends);
+            }
+            friendsVBox.getChildren().add(separator3);
+            friendsVBox.getChildren().add(addFriend);
+            friendsVBox.getChildren().add(backButton);
+            friendsVBox.setSpacing(5);
+            friendsVBox.setPadding(new Insets(5));
             primaryStage.setScene(friendsScene);
         });
+        java.sql.Connection finalConn35 = conn;
+        addFriend.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Add Friend");
+            dialog.setHeaderText("Type username");
+            dialog.setContentText("Username:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String username = result.get();;
+                if(Connection.checkUsername(finalConn35, username)) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Friend request sent to " + username + "!"), ButtonType.OK);
+                    alert.setTitle("Friend request sent");
+                    alert.setHeaderText("Friend request sent");
+                    alert.showAndWait();
+                    //TODO send friend request
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, ("User does not exist"), ButtonType.OK);
+                    alert.setTitle("Friend request failed");
+                    alert.setHeaderText("Friend request failed");
+                    alert.showAndWait();
+                }
+            }
+        });
         backButton.setOnAction(event ->{
+            friendsVBox.getChildren().clear();
             primaryStage.setScene(mainMenu);
         });
         Platform.setImplicitExit(false);
