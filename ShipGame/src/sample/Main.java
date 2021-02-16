@@ -626,6 +626,7 @@ public class Main extends Application {
             primaryStage.setScene(friendsScene);
         });
         java.sql.Connection finalConn35 = conn;
+        java.sql.Connection finalConn36 = conn;
         addFriend.setOnAction(event ->{
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Add Friend");
@@ -635,11 +636,13 @@ public class Main extends Application {
             if (result.isPresent()) {
                 String username = result.get();;
                 if(Connection.checkUsername(finalConn35, username)) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Friend request sent to " + username + "!"), ButtonType.OK);
-                    alert.setTitle("Friend request sent");
-                    alert.setHeaderText("Friend request sent");
-                    alert.showAndWait();
-                    //TODO send friend request
+                    boolean successful = Connection.sendFriendRequest(finalConn36, account, username);
+                    if(successful) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Friend request sent to " + username + "!"), ButtonType.OK);
+                        alert.setTitle("Friend request sent");
+                        alert.setHeaderText("Friend request sent");
+                        alert.showAndWait();
+                    }
                 }
                 else {
                     Alert alert = new Alert(Alert.AlertType.ERROR, ("User does not exist"), ButtonType.OK);

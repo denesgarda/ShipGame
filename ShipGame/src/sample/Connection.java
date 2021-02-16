@@ -478,5 +478,61 @@ public class Connection {
             me.printStackTrace();
         }
     }
+    public static boolean sendFriendRequest(java.sql.Connection conn, String sender, String receiver) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select requests from shipgame.accountsandstats where username = \"" + receiver + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("requests");
+            String[] receiverRequests = ArrayModification.toStringArray(result);
+            Statement stmt2 = null;
+            ResultSet rs2 = null;
+            stmt2 = conn.createStatement();
+            String query2 = "select requests from shipgame.accountsandstats where username = \"" + sender + "\";";
+            PreparedStatement preparedStatement2 = conn.prepareStatement(query2);
+            rs2 = preparedStatement2.executeQuery();
+            rs2.next();
+            String result2 = rs2.getString("requests");
+            String[] senderRequests = ArrayModification.toStringArray(result2);
+            if(Arrays.toString(receiverRequests).toLowerCase().contains(sender.toLowerCase())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You've already send a request to this person, so it did not go through.", ButtonType.OK);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Something went wrong");
+                alert.showAndWait();
+                return false;
+            }
+            else if(Arrays.toString(getFriends(conn, receiver)).toLowerCase().contains(sender.toLowerCase())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You're already friends with this person, so it did not go through.", ButtonType.OK);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Something went wrong");
+                alert.showAndWait();
+                return false;
+            }
+            else {
+                receiverRequests = ArrayModification.appendString(receiverRequests, sender);
+                String toSet = Arrays.toString(receiverRequests);
+                Statement stmt3 = null;
+                ResultSet rs3 = null;
+                stmt3 = conn.createStatement();
+                String query3 = "UPDATE shipgame.accountsandstats SET requests = \"" + toSet + "\" WHERE username = \"" + receiver + "\";";
+                PreparedStatement preparedStatement3 = conn.prepareStatement(query3);
+                preparedStatement3.executeUpdate();
+                return true;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong. The friend request could not be sent.", ButtonType.OK);
+            alert.setTitle("Something went wrong");
+            alert.setHeaderText("Something went wrong");
+            alert.showAndWait();
+            return false;
+        }
+    }
 }
 
