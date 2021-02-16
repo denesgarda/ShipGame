@@ -23,9 +23,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 
 import java.sql.*;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Random;
+import java.sql.Date;
+import java.util.*;
 
 public class Main extends Application {
     double gameVersion = 3.0;
@@ -2070,8 +2069,54 @@ public class Main extends Application {
                 System.exit(0);
             }
         });
+        /*TimerTask task = new TimerTask() {
+            public void run() {
+                System.out.println("test");
+            }
+        };
+        Timer timer = new Timer("Timer");
+        long delay = 1000L;
+        timer.schedule(task, delay);*/
+        pingRequests(conn, account);
+        java.sql.Connection finalConn37 = conn;
+        TimerTask task = new TimerTask() {
+            public void run() {
+                pingRequests(finalConn37, account);
+            }
+        };
+        Timer timer = new Timer("Timer");
+        timer.scheduleAtFixedRate(task, 20000L, 20000L);
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    public static void pingRequests(java.sql.Connection conn, String account) {
+        System.out.println("pinging");
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select requests from shipgame.accountsandstats where username = \"" + account + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("requests");
+            String[] requests = ArrayModification.toStringArray(result);
+            if(requests.length > 1) {
+                for (int i = 0; i < requests.length; i++) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, (requests[i] + " is sent you a friend request. Do you want to accept?"), ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Accept friend request?");
+                    alert.setHeaderText("Accept friend request?");
+                    Optional<ButtonType> result2 = alert.showAndWait();
+                    if (result2.get() == ButtonType.YES) {
+                        System.out.println("accepted");
+                    }
+                }
+                //TODO fix
+            }
+        }
+        catch(SQLException ex) {
+
+        }
     }
 }
