@@ -407,6 +407,7 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn19 = conn;
         java.sql.Connection finalConn20 = conn;
+        java.sql.Connection finalConn38 = conn;
         forgotPasswordOption.setOnAction(event ->{
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Forgot Password");
@@ -450,7 +451,7 @@ public class Main extends Application {
                                     } else {
                                         boolean successful = Connection.changePassword(finalConn20, email, password);
                                         if (successful) {
-                                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Your password has been changed. Login to use.", ButtonType.OK);
+                                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION, ("Your password that is linked to account " + Connection.getusernameViaEmail(finalConn38, email) + " has been changed. Login to use."), ButtonType.OK);
                                             alert2.setTitle("Password changed");
                                             alert2.setHeaderText("Password changed");
                                             alert2.showAndWait();
@@ -2091,7 +2092,7 @@ public class Main extends Application {
         launch(args);
     }
     public static void pingRequests(java.sql.Connection conn, String account) {
-        System.out.println("pinging");
+        System.out.println("pinging requests");
         try {
             Statement stmt = null;
             ResultSet rs = null;
@@ -2103,7 +2104,7 @@ public class Main extends Application {
             String result = rs.getString("requests");
             String[] requests = ArrayModification.toStringArray(result);
             if(requests.length > 1) {
-                for (int i = 0; i < requests.length; i++) {
+                for (int i = 1; i < requests.length; i++) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, (requests[i] + " is sent you a friend request. Do you want to accept?"), ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Accept friend request?");
                     alert.setHeaderText("Accept friend request?");

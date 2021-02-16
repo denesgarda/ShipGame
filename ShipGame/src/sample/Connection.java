@@ -134,6 +134,23 @@ public class Connection {
             return null;
         }
     }
+    public static String getusernameViaEmail(java.sql.Connection conn, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select username from shipgame.accountsandstats where email = \"" + email + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("username");
+            return result;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
     public static boolean checkUsername(java.sql.Connection conn, String username) {
         try {
             Statement stmt = null;
