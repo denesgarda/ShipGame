@@ -1,29 +1,37 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
+
 import java.sql.*;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Random;
+import java.sql.Date;
 import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
 
 public class Main extends Application {
-    double gameVersion = 2.2;
+    double gameVersion = 3.0;
     String account = "";
     boolean inGame = false;
     boolean doWinAlert = true;
+    int friendsNumber = 0;
 
     Random rand = new Random();
     int money = 2000;
@@ -51,6 +59,7 @@ public class Main extends Application {
     String[] portNames = {"Havenbrorough", "Woodham", "Coldfield", "Prumore", "Nurith", "Hapool", "Glilsall", "Vondon", "Zorothin", "Aresset", "Okphis", "Drakta", "Verpbury", "Umul", "Blora", "Blora"};
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Stage chatStage = new Stage();
         java.sql.Connection conn = null;
         try {
             conn =
@@ -59,11 +68,15 @@ public class Main extends Application {
             // Do something with the Connection
             java.sql.Connection finalConn = conn;
             java.sql.Connection finalConn11 = conn;
+            java.sql.Connection finalConn32 = conn;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if(inGame) {
                     if(!(account.equals(""))) {
                         boolean addLoss = Connection.addLoss(finalConn11, account, gameVersion);
                     }
+                }
+                if(!(account.equals(""))) {
+                    Connection.changeStatusViaUsername(finalConn32, account, 0);
                 }
                 try {
                     finalConn.close();
@@ -108,6 +121,7 @@ public class Main extends Application {
         playOnline.setStyle("-fx-font-size: 15px;");
         playOnline.setLayoutX(150);
         playOnline.setLayoutY(180);
+        playOnline.setDefaultButton(true);
         mainMenuPane.getChildren().add(playOnline);
         Button patchNotes = new Button("Patch Notes");
         patchNotes.setStyle("-fx-font-size: 15px;");
@@ -119,7 +133,7 @@ public class Main extends Application {
         welcome.setY(150);
         welcome.setStyle("-fx-font-size: 25px;");
         mainMenuPane.getChildren().add(welcome);
-        Text version = new Text("v2.2");
+        Text version = new Text("v3.0");
         version.setStyle("-fx-font-size: 12px;");
         version.setX(375);
         version.setY(390);
@@ -148,8 +162,21 @@ public class Main extends Application {
         howToPlay.setLayoutX(147);
         howToPlay.setLayoutY(260);
         mainMenuPane.getChildren().add(howToPlay);
+        Button website = new Button("Website");
+        website.setStyle("-fx-font-size: 10px;");
+        website.setLayoutX(10);
+        website.setLayoutY(330);
+        mainMenuPane.getChildren().add(website);
+        Button chat = new Button("Chat");
+        chat.setStyle("-fx-font-size: 15px;");
+        chat.setLayoutX(342);
+        chat.setLayoutY(10);
+        Button friends = new Button("Friends");
+        friends.setStyle("-fx-font-size: 15px;");
+        friends.setLayoutX(325);
+        friends.setLayoutY(45);
         Scene mainMenu = new Scene(mainMenuPane, 400, 400);
-        primaryStage.setTitle("The Ship Game v2.2");
+        primaryStage.setTitle("The Ship Game v3.0");
         primaryStage.setScene(mainMenu);
         primaryStage.show();
         Pane howToPlayPane = new Pane();
@@ -218,8 +245,14 @@ public class Main extends Application {
                 alert.showAndWait();
             }
         });
+        java.sql.Connection finalConn23 = conn;
+        java.sql.Connection finalConn24 = conn;
+        website.setOnAction(event ->{
+            getHostServices().showDocument("http://theshipgame.ddns.net");
+        });
         java.sql.Connection finalConn2 = conn;
         java.sql.Connection finalConn3 = conn;
+        java.sql.Connection finalConn31 = conn;
         loginOption.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Login");
@@ -228,7 +261,7 @@ public class Main extends Application {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String username = result.get();
-                if (username.equals("")) {
+                if (username.isBlank()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                     alert.setTitle("Username is null");
                     alert.setHeaderText("Username is null");
@@ -236,14 +269,13 @@ public class Main extends Application {
                 } else {
                     boolean successful = Connection.checkUsername(finalConn2, username);
                     if (successful) {
-                        TextInputDialog dialog2 = new TextInputDialog("");
+                        PasswordDialog dialog2 = new PasswordDialog();
                         dialog2.setTitle("Login");
-                        dialog2.setHeaderText("Login");
-                        dialog2.setContentText("Password:");
+                        dialog2.setHeaderText("Enter Password");
                         Optional<String> result2 = dialog2.showAndWait();
                         if (result2.isPresent()) {
                             String password = result2.get();
-                            if (password.equals("")) {
+                            if (password.isBlank()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                 alert.setTitle("Password is null");
                                 alert.setHeaderText("Password is null");
@@ -258,7 +290,11 @@ public class Main extends Application {
                                     playOffline.setLayoutY(180);
                                     mainMenuPane.getChildren().add(settings);
                                     mainMenuPane.getChildren().remove(playOnline);
+                                    playOffline.setDefaultButton(true);
+                                    mainMenuPane.getChildren().add(friends);
+                                    mainMenuPane.getChildren().add(chat);
                                     primaryStage.setScene(mainMenu);
+                                    Connection.changeStatusViaUsername(finalConn31, account, 1);
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Online mode has now been activated", ButtonType.OK);
                                     alert.setTitle("Activated");
                                     alert.setHeaderText("Activated");
@@ -291,7 +327,7 @@ public class Main extends Application {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String username = result.get();
-                if (username.equals("")) {
+                if (username.isBlank()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                     alert.setTitle("Username is null");
                     alert.setHeaderText("Username is null");
@@ -304,14 +340,13 @@ public class Main extends Application {
                         alert.setHeaderText("Username is already taken");
                         alert.showAndWait();
                     } else {
-                        TextInputDialog dialog2 = new TextInputDialog("");
+                        PasswordDialog dialog2 = new PasswordDialog();
                         dialog2.setTitle("Sign Up");
-                        dialog2.setHeaderText("Sign Up");
-                        dialog2.setContentText("Create Password:");
+                        dialog2.setHeaderText("Create Password");
                         Optional<String> result2 = dialog2.showAndWait();
                         if (result2.isPresent()) {
                             String password = result2.get();
-                            if (password.equals("")) {
+                            if (password.isBlank()) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                 alert.setTitle("Password is null");
                                 alert.setHeaderText("Password is null");
@@ -325,7 +360,7 @@ public class Main extends Application {
                                 if (result3.isPresent()) {
                                     String email = result3.get();
                                     boolean exists2 = Connection.checkEmail(finalConn18, email);
-                                    if(result3.equals("")) {
+                                    if(email.isBlank()) {
                                         Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
                                         alert.setTitle("Email is null");
                                         alert.setHeaderText("Email is null");
@@ -340,6 +375,12 @@ public class Main extends Application {
                                     else if(email.contains("@") && email.contains(".")) {
                                         boolean successful = Connection.insertUser(finalConn5, username, password, email);
                                         if (successful) {
+                                            /*String from = "theshipgame.management";
+                                            String pass = "theshipgamepassword";
+                                            String[] to = {email}; // list of recipient email addresses
+                                            String subject = "Welcome to the Ship Game!";
+                                            String body = "Welcome to the ship game. Thank you for creating an account to play with!";
+                                            Connection.sendFromGMail(from, pass, to, subject, body);*/
                                             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created! Login to use.", ButtonType.OK);
                                             alert.setTitle("Account created");
                                             alert.setHeaderText("Account created");
@@ -366,6 +407,7 @@ public class Main extends Application {
         });
         java.sql.Connection finalConn19 = conn;
         java.sql.Connection finalConn20 = conn;
+        java.sql.Connection finalConn38 = conn;
         forgotPasswordOption.setOnAction(event ->{
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Forgot Password");
@@ -395,14 +437,13 @@ public class Main extends Application {
                     if (result2.isPresent()) {
                         try {
                             if (Integer.parseInt(result2.get()) == randomNumber) {
-                                TextInputDialog dialog3 = new TextInputDialog("");
+                                PasswordDialog dialog3 = new PasswordDialog();
                                 dialog3.setTitle("Create password");
-                                dialog3.setHeaderText("Create password");
-                                dialog3.setContentText("Create new password:");
+                                dialog3.setHeaderText("Create new password");
                                 Optional<String> result3 = dialog3.showAndWait();
                                 if (result3.isPresent()) {
                                     String password = result3.get();
-                                    if (password.equals("")) {
+                                    if (password.isBlank()) {
                                         Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
                                         alert2.setTitle("Password is null");
                                         alert2.setHeaderText("Password is null");
@@ -410,7 +451,7 @@ public class Main extends Application {
                                     } else {
                                         boolean successful = Connection.changePassword(finalConn20, email, password);
                                         if (successful) {
-                                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Your password has been changed. Login to use.", ButtonType.OK);
+                                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION, ("Your password that is linked to account " + Connection.getusernameViaEmail(finalConn38, email) + " has been changed. Login to use."), ButtonType.OK);
                                             alert2.setTitle("Password changed");
                                             alert2.setHeaderText("Password changed");
                                             alert2.showAndWait();
@@ -460,7 +501,7 @@ public class Main extends Application {
                     Optional<String> result = dialog.showAndWait();
                     if (result.isPresent()) {
                         String feedbackToSend = result.get();
-                        if (feedbackToSend.equals("")) {
+                        if (feedbackToSend.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.WARNING, "Feedback was not recorded as input was null.", ButtonType.OK);
                             alert.setTitle("Feedback was not recorded");
                             alert.setHeaderText("Feedback was not recorded");
@@ -482,7 +523,7 @@ public class Main extends Application {
                     }
                 }
                 else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, ("You are not using the latest supported version of the game. You are using either an outdated version, or a pre-release version. Please use v." + Connection.retrieveMaxVersion(finalConn15) + "."), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, ("You are not using the latest supported version of the game. You are using either an outdated version, or a pre-release version. Please use v" + Connection.retrieveMaxVersion(finalConn15) + "."), ButtonType.OK);
                     alert.setTitle("Unsupported version");
                     alert.setHeaderText("Unsupported version");
                     alert.showAndWait();
@@ -495,6 +536,142 @@ public class Main extends Application {
                 alert.showAndWait();
             }
             // The Java 8 way to get the response value (with lambda expression).
+        });
+        Button messageSendButton = new Button("Send");
+        TextField messageField = new TextField();
+        chat.setOnAction(event ->{
+            chatStage.show();
+            chatStage.setTitle("The Ship Game Chat");
+            Pane chatPane = new Pane();
+            Text chatTitle = new Text("Party Chat");
+            chatTitle.setStyle("-fx-font-size: 25px;");
+            chatTitle.setY(30);
+            chatTitle.setX(150);
+            chatPane.getChildren().add(chatTitle);
+            Scene chatScene = new Scene(chatPane, 400, 400);
+            Line line1 = new Line(10, 45, 390, 45);
+            line1.setStroke(Color.GRAY);
+            chatPane.getChildren().add(line1);
+            Line line2 = new Line(10, 340, 390, 340);
+            line2.setStroke(Color.GRAY);
+            chatPane.getChildren().add(line2);
+            messageField.setLayoutX(20);
+            messageField.setLayoutY(350);
+            messageField.setMinWidth(300);
+            messageField.setMaxWidth(300);
+            chatPane.getChildren().add(messageField);
+            messageSendButton.setStyle("-fx-font-size: 12px;");
+            messageSendButton.setLayoutX(330);
+            messageSendButton.setLayoutY(350);
+            chatPane.getChildren().add(messageSendButton);
+            chatStage.setScene(chatScene);
+            messageField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    if(keyEvent.getCode() == KeyCode.ENTER) {
+                        String message = messageField.getText();
+                        messageField.setText("");
+                        if(!message.isBlank()) {
+                            System.out.println(message);
+                        }
+                    }
+                }
+            });
+        });
+        messageSendButton.setOnAction(event ->{
+            String message = messageField.getText();
+            messageField.setText("");
+            if(!message.isBlank()) {
+                System.out.println(message);
+            }
+        });
+        VBox friendsVBox = new VBox();
+        Text friendsVBoxTitle = new Text("Friends");
+        friendsVBoxTitle.setStyle("-fx-font-size: 25px;");
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        Button backButton = new Button("Back");
+        backButton.setStyle("-fx-font-size: 15px;");
+        Button addFriend = new Button("Add Friend");
+        addFriend.setStyle("-fx-font-size: 15px;");
+        Separator separator2 = new Separator(Orientation.HORIZONTAL);
+        Separator separator3 = new Separator(Orientation.HORIZONTAL);
+        Scene friendsScene = new Scene(friendsVBox, 400, 400);
+        java.sql.Connection finalConn33 = conn;
+        java.sql.Connection finalConn34 = conn;
+        friends.setOnAction(event ->{
+            friendsVBox.getChildren().add(friendsVBoxTitle);
+            friendsVBox.getChildren().add(separator);
+            String[] friendsList = Connection.getFriends(finalConn33, account);
+            if(friendsList.length > 1) {
+                for(int i = 0; i < friendsList.length; i++) {
+                    String friend = friendsList[i];
+                    if(Connection.checkStatus(finalConn34, friend)) {
+                        friend += " - ONLINE";
+                    }
+                    Text specific = new Text(friend);
+                    specific.setStyle("-fx-font-size: 15px;");
+                    friendsVBox.getChildren().add(specific);
+                }
+            }
+            else {
+                Text noFriends = new Text("You have no friends :(");
+                noFriends.setStyle("-fx-font-size: 15px;");
+                friendsVBox.getChildren().add(noFriends);
+            }
+            friendsVBox.getChildren().add(separator3);
+            friendsVBox.getChildren().add(addFriend);
+            friendsVBox.getChildren().add(backButton);
+            friendsVBox.setSpacing(5);
+            friendsVBox.setPadding(new Insets(5));
+            primaryStage.setScene(friendsScene);
+        });
+        java.sql.Connection finalConn35 = conn;
+        java.sql.Connection finalConn36 = conn;
+        addFriend.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Add Friend");
+            dialog.setHeaderText("Type username");
+            dialog.setContentText("Username:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String username = result.get();;
+                if(Connection.checkUsername(finalConn35, username)) {
+                    boolean successful = Connection.sendFriendRequest(finalConn36, account, username);
+                    if(successful) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Friend request sent to " + username + "!"), ButtonType.OK);
+                        alert.setTitle("Friend request sent");
+                        alert.setHeaderText("Friend request sent");
+                        alert.showAndWait();
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, ("User does not exist"), ButtonType.OK);
+                    alert.setTitle("Friend request failed");
+                    alert.setHeaderText("Friend request failed");
+                    alert.showAndWait();
+                }
+            }
+        });
+        backButton.setOnAction(event ->{
+            friendsVBox.getChildren().clear();
+            primaryStage.setScene(mainMenu);
+        });
+        Platform.setImplicitExit(false);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to quit the game? It's not like you have anything better to do...", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Are you sure you want to quit?");
+                alert.setHeaderText("Are you sure you want to quit?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    chatStage.close();
+                    System.exit(0);
+                }
+                else {
+                    event.consume();
+                }
+            }
         });
         Pane settingsPane = new Pane();
         Text accountSettings = new Text("Account Settings");
@@ -510,24 +687,30 @@ public class Main extends Application {
         Button changeUsername = new Button("Change Username");
         changeUsername.setStyle("-fx-font-size: 15px;");
         changeUsername.setLayoutX(135);
-        changeUsername.setLayoutY(225);
+        changeUsername.setLayoutY(215);
         settingsPane.getChildren().add(changeUsername);
-        //TODO add change password
         Button changePassword = new Button("Change Password");
         changePassword.setStyle("-fx-font-size: 15px;");
         changePassword.setLayoutX(137);
-        changePassword.setLayoutY(275);
+        changePassword.setLayoutY(255);
         settingsPane.getChildren().add(changePassword);
-        //TODO add change email
         Button changeEmail = new Button("Change Email");
         changeEmail.setStyle("-fx-font-size: 15px;");
         changeEmail.setLayoutX(148);
-        changeEmail.setLayoutY(325);
+        changeEmail.setLayoutY(295);
         settingsPane.getChildren().add(changeEmail);
+        Button deleteAccount = new Button("Delete Account");
+        deleteAccount.setStyle("-fx-font-size: 15px;");
+        deleteAccount.setLayoutX(144);
+        deleteAccount.setLayoutY(335);
+        settingsPane.getChildren().add(deleteAccount);
         Scene settingsScene = new Scene(settingsPane, 400, 400);
         settings.setOnAction(event ->{
             if(!(account.equals(""))) {
                 settingsPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    settingsPane.getChildren().add(chat);
+                }
                 primaryStage.setScene(settingsScene);
             }
             else {
@@ -537,24 +720,95 @@ public class Main extends Application {
                 alert.showAndWait();
             }
         });
+        java.sql.Connection finalConn28 = conn;
+        java.sql.Connection finalConn29 = conn;
+        java.sql.Connection finalConn30 = conn;
+        deleteAccount.setOnAction(event ->{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete you're account?", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Delete Account");
+            alert.setHeaderText("Continue?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
+                TextInputDialog dialog2 = new TextInputDialog("");
+                dialog2.setTitle("Delete Account");
+                dialog2.setHeaderText("Why are you deleting your account? Please enter any reason as we'd love to improve!");
+                dialog2.setContentText("Reason:");
+                Optional<String> result2 = dialog2.showAndWait();
+                if (result2.isPresent()) {
+                    String reason = result2.get();
+                    PasswordDialog dialog3 = new PasswordDialog();
+                    dialog3.setTitle("Delete Account");
+                    dialog3.setHeaderText("Type your password to continue");
+                    Optional<String> result3 = dialog3.showAndWait();
+                    if (result3.isPresent()) {
+                        String password = result3.get();
+                        if(Connection.checkPassword(finalConn28, account, password)) {
+                            Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to continue? Once you click yes, there's no going back. All of your data will be lost!", ButtonType.YES, ButtonType.NO);
+                            alert4.setTitle("Delete Account");
+                            alert4.setHeaderText("Continue?");
+                            Optional<ButtonType> result4 = alert4.showAndWait();
+                            if(result4.get() == ButtonType.YES) {
+                                Connection.insertDeleteReason(finalConn29, account, reason);
+                                boolean successful = Connection.deleteUser(finalConn30, account);
+                                if(successful) {
+                                    Connection.changeStatusViaUsername(finalConn31, account, 0);
+                                    account = "";
+                                    mainMenuPane.getChildren().remove(viewStats);
+                                    playOffline.setText("Play Offline");
+                                    playOffline.setLayoutX(150);
+                                    playOffline.setLayoutY(220);
+                                    mainMenuPane.getChildren().remove(settings);
+                                    mainMenuPane.getChildren().remove(friends);
+                                    mainMenuPane.getChildren().remove(chat);
+                                    playOffline.setDefaultButton(false);
+                                    mainMenuPane.getChildren().add(playOnline);
+                                    primaryStage.setScene(mainMenu);
+                                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "We're sad to see you go... Your account has been deleted.", ButtonType.OK);
+                                    alert2.setTitle("Delete Account");
+                                    alert2.setHeaderText("Account Deleted");
+                                    alert2.showAndWait();
+                                }
+                                else {
+                                    Alert alert2 = new Alert(Alert.AlertType.ERROR, "Something went wrong. Your account could not be deleted.", ButtonType.OK);
+                                    alert2.setTitle("Something went wrong");
+                                    alert2.setHeaderText("Something went wrong");
+                                    alert2.showAndWait();
+                                }
+                            }
+                        }
+                        else {
+                            Alert alert2 = new Alert(Alert.AlertType.ERROR, "Password is incorrect", ButtonType.OK);
+                            alert2.setTitle("Incorrect Password");
+                            alert2.setHeaderText("Incorrect Password");
+                            alert2.showAndWait();
+                        }
+                    }
+                }
+            }
+        });
         logOut.setOnAction(event ->{
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to log out?", ButtonType.YES, ButtonType.NO);
             alert.setTitle("Continue?");
             alert.setHeaderText("Continue?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.YES) {
+                Connection.changeStatusViaUsername(finalConn31, account, 0);
                 account = "";
                 mainMenuPane.getChildren().remove(viewStats);
                 playOffline.setText("Play Offline");
                 playOffline.setLayoutX(150);
                 playOffline.setLayoutY(220);
                 mainMenuPane.getChildren().remove(settings);
+                mainMenuPane.getChildren().remove(friends);
+                playOffline.setDefaultButton(false);
+                mainMenuPane.getChildren().remove(chat);
                 mainMenuPane.getChildren().add(playOnline);
                 primaryStage.setScene(mainMenu);
             }
         });
         java.sql.Connection finalConn21 = conn;
         java.sql.Connection finalConn22 = conn;
+        java.sql.Connection finalConn27 = conn;
         changeUsername.setOnAction(event ->{
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle("Change username");
@@ -571,7 +825,7 @@ public class Main extends Application {
                     Optional<String> result2 = dialog2.showAndWait();
                     if (result2.isPresent()) {
                         String newUsername = result2.get();
-                        if(newUsername.equals("")) {
+                        if(newUsername.isBlank()) {
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Username is null", ButtonType.OK);
                             alert.setTitle("Username is null");
                             alert.setHeaderText("Username is null");
@@ -609,6 +863,112 @@ public class Main extends Application {
                 }
             }
         });
+        java.sql.Connection finalConn25 = conn;
+        changePassword.setOnAction(event -> {
+            PasswordDialog dialog = new PasswordDialog();
+            dialog.setTitle("Change password");
+            dialog.setHeaderText("Enter your current password");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String password = result.get();
+                if(Connection.checkPassword(finalConn25, account, password)) {
+                    PasswordDialog dialog2 = new PasswordDialog();
+                    dialog2.setTitle("Change password");
+                    dialog2.setHeaderText("Create new password");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        String newPassword = result2.get();
+                        if(newPassword.isBlank()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Password is null", ButtonType.OK);
+                            alert.setTitle("Password is null");
+                            alert.setHeaderText("Password is null");
+                            alert.showAndWait();
+                        }
+                        else {
+                            boolean successful = Connection.changePasswordViaUsername(finalConn21, account, newPassword);
+                            if(successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Your password has been changed."), ButtonType.OK);
+                                alert.setTitle("Password changed");
+                                alert.setHeaderText("Password changed");
+                                alert.showAndWait();
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The password you entered is incorrect.", ButtonType.OK);
+                    alert.setTitle("Incorrect password");
+                    alert.setHeaderText("Incorrect password");
+                    alert.showAndWait();
+                }
+            }
+        });
+        java.sql.Connection finalConn26 = conn;
+        changeEmail.setOnAction(event ->{
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Change email");
+            dialog.setHeaderText("Enter your current email");
+            dialog.setContentText("Current email:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String email = result.get();
+                if(Connection.checkEmailViaUsername(finalConn26, account, email)) {
+                    TextInputDialog dialog2 = new TextInputDialog("");
+                    dialog2.setTitle("Change email");
+                    dialog2.setHeaderText("Enter your new email");
+                    dialog2.setContentText("New email:");
+                    Optional<String> result2 = dialog2.showAndWait();
+                    if (result2.isPresent()) {
+                        String newEmail = result2.get();
+                        if(newEmail.isBlank()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is null", ButtonType.OK);
+                            alert.setTitle("Email is null");
+                            alert.setHeaderText("Email is null");
+                            alert.showAndWait();
+                        }
+                        else if(Connection.checkEmail(finalConn22, newEmail)) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is already in use", ButtonType.OK);
+                            alert.setTitle("Email is already in use by another account");
+                            alert.setHeaderText("Email is already in use by another account");
+                            alert.showAndWait();
+                        }
+                        else if(!(newEmail.contains("@") && newEmail.contains("."))) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is invalid", ButtonType.OK);
+                            alert.setTitle("Invalid email");
+                            alert.setHeaderText("Invalid email");
+                            alert.showAndWait();
+                        }
+                        else {
+                            boolean successful = Connection.changeEmail(finalConn21, account, newEmail);
+                            if(successful) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, ("Your email has been changed to " + newEmail + "."), ButtonType.OK);
+                                alert.setTitle("Email changed");
+                                alert.setHeaderText("Email changed");
+                                alert.showAndWait();
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong", ButtonType.OK);
+                                alert.setTitle("Something went wrong");
+                                alert.setHeaderText("Something went wrong");
+                                alert.showAndWait();
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The email you entered is incorrect.", ButtonType.OK);
+                    alert.setTitle("Incorrect email");
+                    alert.setHeaderText("Incorrect email");
+                    alert.showAndWait();
+                }
+            }
+        });
         patchNotes.setOnAction(event -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "- 1.0\n" +
                     "    - Made the game\n" +
@@ -642,8 +1002,11 @@ public class Main extends Application {
                     "    - Set button focus to play online\n" +
                     "    - Made it so you can only change stats using latest supported version\n" +
                     "- 2.2\n" +
-                    "    - Fixed a type\n" +
-                    "    - Added quit confirmation message", ButtonType.OK);
+                    "    - Fixed a typo\n" +
+                    "    - Added quit confirmation message\n" +
+                    "    - Added email collection system\n" +
+                    "    - Added forgot password option\n" +
+                    "    - Added account configuration options", ButtonType.OK);
             alert.setTitle("Patch Notes");
             alert.setHeaderText("Patch Notes");
             alert.showAndWait();
@@ -676,6 +1039,9 @@ public class Main extends Application {
         viewStats.setOnAction(event -> {
             if(!(finalConn10 == null)) {
                 statsPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    statsPane.getChildren().add(chat);
+                }
                 primaryStage.setScene(statsScene);
             }
             else {
@@ -892,6 +1258,9 @@ public class Main extends Application {
             portPane.getChildren().add(portInventory);
             portPane.getChildren().add(yourInventory);
             sailingPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                sailingPane.getChildren().add(chat);
+            }
             primaryStage.setScene(sailingScene);
         /*Pane testPane = new Pane();
         Text testText = new Text("test text");
@@ -907,6 +1276,9 @@ public class Main extends Application {
             portPane.getChildren().add(portInventory);
             portPane.getChildren().add(yourInventory);
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         buy.setOnAction(event -> {
@@ -918,6 +1290,9 @@ public class Main extends Application {
             moneyBeforeBuy.setLayoutY(10);
             howMuchToBuyPane.getChildren().add(moneyBeforeBuy);
             whatToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                whatToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(whatToBuyScene);
         });
         quit.setOnAction(event -> {
@@ -932,6 +1307,9 @@ public class Main extends Application {
                     }
                     inGame = false;
                     mainMenuPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        mainMenuPane.getChildren().add(chat);
+                    }
                     mainMenuPane.getChildren().remove(quit);
                     primaryStage.setScene(mainMenu);
                 }
@@ -939,21 +1317,33 @@ public class Main extends Application {
             else {
                 inGame = false;
                 mainMenuPane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    mainMenuPane.getChildren().add(chat);
+                }
                 mainMenuPane.getChildren().remove(quit);
                 primaryStage.setScene(mainMenu);
             }
         });
         cancelBuy.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         cancelBuy2.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         buyCotton.setOnAction(event -> {
             whatToBuyEnd = ("cotton");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / cottonPrice));
             if (money < cottonPrice) {
@@ -972,6 +1362,9 @@ public class Main extends Application {
         buySteel.setOnAction(event -> {
             whatToBuyEnd = ("steel");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / steelPrice));
             if (money < steelPrice) {
@@ -990,6 +1383,9 @@ public class Main extends Application {
         buyGold.setOnAction(event -> {
             whatToBuyEnd = ("gold");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / goldPrice));
             if (money < goldPrice) {
@@ -1008,6 +1404,9 @@ public class Main extends Application {
         buyDiamond.setOnAction(event -> {
             whatToBuyEnd = ("diamond");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / diamondPrice));
             if (money < diamondPrice) {
@@ -1026,6 +1425,9 @@ public class Main extends Application {
         buyWood.setOnAction(event -> {
             whatToBuyEnd = ("wood");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / woodPrice));
             if (money < woodPrice) {
@@ -1044,6 +1446,9 @@ public class Main extends Application {
         buyFood.setOnAction(event -> {
             whatToBuyEnd = ("food");
             howMuchToBuyPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToBuyPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToBuyScene);
             howMuchToBuy.setMax(Math.floor(money / foodPrice));
             if (money < foodPrice) {
@@ -1133,6 +1538,9 @@ public class Main extends Application {
                 portPane.getChildren().add(yourInventory);
             }
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
             if (money <= 0) {
                 if(!(account.equals(""))) {
@@ -1142,6 +1550,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1162,6 +1573,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1170,6 +1584,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1182,6 +1599,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
@@ -1218,6 +1638,9 @@ public class Main extends Application {
             portInventory.setY(80);
             portPane.getChildren().add(portInventory);
             sailingPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                sailingPane.getChildren().add(chat);
+            }
             primaryStage.setScene(sailingScene);
             food = oldFood - 5;
             if (money <= 0) {
@@ -1228,6 +1651,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1248,6 +1674,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1256,6 +1685,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1268,6 +1700,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
@@ -1318,6 +1753,9 @@ public class Main extends Application {
             moneyBeforeSell.setLayoutY(10);
             howMuchToSellPane.getChildren().add(moneyBeforeSell);
             whatToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                whatToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(whatToSellScene);
         });
         Text howMuchToSellText = new Text("How much do you want to sell?");
@@ -1365,6 +1803,9 @@ public class Main extends Application {
         sellCotton.setOnAction(event -> {
             whatToSellEnd = "cotton";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(cotton);
             if (cotton == 0) {
@@ -1383,6 +1824,9 @@ public class Main extends Application {
         sellSteel.setOnAction(event -> {
             whatToSellEnd = "steel";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(steel);
             if (steel == 0) {
@@ -1401,6 +1845,9 @@ public class Main extends Application {
         sellGold.setOnAction(event -> {
             whatToSellEnd = "gold";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(gold);
             if (gold == 0) {
@@ -1419,6 +1866,9 @@ public class Main extends Application {
         sellDiamond.setOnAction(event -> {
             whatToSellEnd = "diamond";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(diamond);
             if (diamond == 0) {
@@ -1437,6 +1887,9 @@ public class Main extends Application {
         sellWood.setOnAction(event -> {
             whatToSellEnd = "wood";
             howMuchToSellPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                howMuchToSellPane.getChildren().add(chat);
+            }
             primaryStage.setScene(howMuchToSellScene);
             howMuchToSell.setMax(wood);
             if (wood == 0) {
@@ -1454,10 +1907,16 @@ public class Main extends Application {
         });
         cancelSell.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         cancelSell2.setOnAction(event -> {
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
         });
         sellButton2.setOnAction(event -> {
@@ -1535,6 +1994,9 @@ public class Main extends Application {
                 portPane.getChildren().add(yourInventory);
             }
             portPane.getChildren().add(quit);
+            if(!(account.equals(""))) {
+                portPane.getChildren().add(chat);
+            }
             primaryStage.setScene(portScene);
             if (money <= 0) {
                 if(!(account.equals(""))) {
@@ -1544,6 +2006,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             } else if (money >= 60000) {
                 if(doWinAlert) {
@@ -1564,6 +2029,9 @@ public class Main extends Application {
                         }
                     }
                     winPane.getChildren().add(quit);
+                    if(!(account.equals(""))) {
+                        winPane.getChildren().add(chat);
+                    }
                     primaryStage.setScene(winScene);
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to continue playing? If you lose, it wont count as a loss since you already won.", ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Continue?");
@@ -1572,6 +2040,9 @@ public class Main extends Application {
                     if (result.get() == ButtonType.YES) {
                         doWinAlert = false;
                         sailingPane.getChildren().add(quit);
+                        if(!(account.equals(""))) {
+                            sailingPane.getChildren().add(chat);
+                        }
                         primaryStage.setScene(sailingScene);
                     }
                 }
@@ -1584,6 +2055,9 @@ public class Main extends Application {
                 }
                 inGame = false;
                 losePane.getChildren().add(quit);
+                if(!(account.equals(""))) {
+                    losePane.getChildren().add(chat);
+                }
                 primaryStage.setScene(loseScene);
             }
         });
@@ -1596,8 +2070,54 @@ public class Main extends Application {
                 System.exit(0);
             }
         });
+        /*TimerTask task = new TimerTask() {
+            public void run() {
+                System.out.println("test");
+            }
+        };
+        Timer timer = new Timer("Timer");
+        long delay = 1000L;
+        timer.schedule(task, delay);*/
+        pingRequests(conn, account);
+        java.sql.Connection finalConn37 = conn;
+        TimerTask task = new TimerTask() {
+            public void run() {
+                pingRequests(finalConn37, account);
+            }
+        };
+        Timer timer = new Timer("Timer");
+        timer.scheduleAtFixedRate(task, 20000L, 20000L);
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    public static void pingRequests(java.sql.Connection conn, String account) {
+        System.out.println("pinging requests");
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select requests from shipgame.accountsandstats where username = \"" + account + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("requests");
+            String[] requests = ArrayModification.toStringArray(result);
+            if(requests.length > 1) {
+                for (int i = 1; i < requests.length; i++) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, (requests[i] + " is sent you a friend request. Do you want to accept?"), ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Accept friend request?");
+                    alert.setHeaderText("Accept friend request?");
+                    Optional<ButtonType> result2 = alert.showAndWait();
+                    if (result2.get() == ButtonType.YES) {
+                        System.out.println("accepted");
+                    }
+                }
+                //TODO fix
+            }
+        }
+        catch(SQLException ex) {
+
+        }
     }
 }

@@ -30,7 +30,15 @@
     - Set button focus to play online
     - Made it so you can only change stats using latest supported version
 - 2.2
-    - Fixed a type
+    - Fixed a typo
     - Added quit confirmation message
     - Added email collection system
     - Added forgot password option
+    - Added account configuration options
+- 3.0
+    - Added Friends tab
+    - Added Chat tab
+    - Bug Fixes
+    - Made it so passwords are dots
+    - Added delete account option
+    - Small changes

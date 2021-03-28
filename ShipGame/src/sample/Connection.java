@@ -76,6 +76,81 @@ public class Connection {
             return null;
         }
     }
+    public static String[] getFriends(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select friends from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("friends");
+            String[] friends = ArrayModification.toStringArray(result);
+            return friends;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
+    public static boolean checkStatus(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select status from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("status");
+            if(result.equals("1")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            return false;
+        }
+    }
+    public static String getEmailViaUsername(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select email from shipgame.accountsandstats where username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("email");
+            return result;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
+    public static String getusernameViaEmail(java.sql.Connection conn, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select username from shipgame.accountsandstats where email = \"" + email + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("username");
+            return result;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
     public static boolean checkUsername(java.sql.Connection conn, String username) {
         try {
             Statement stmt = null;
@@ -109,6 +184,28 @@ public class Connection {
             rs.next();
             String result = rs.getString("password");
             if(result.equals(password)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean checkEmailViaUsername(java.sql.Connection conn, String username, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select email from shipgame.accountsandstats where username = " + "\"" + username + "\"";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("email");
+            if(result.equals(email)) {
                 return true;
             }
             else {
@@ -162,12 +259,89 @@ public class Connection {
             return false;
         }
     }
+    public static boolean insertDeleteReason(java.sql.Connection conn, String account, String reason) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "insert into shipgame.deletereason (account, reason)" + " values (?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, account);
+            preparedStatement.setString(2, reason);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean deleteUser(java.sql.Connection conn, String username) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "DELETE FROM shipgame.accountsandstats WHERE username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
     public static boolean changePassword(java.sql.Connection conn, String email, String password) {
         try {
             Statement stmt = null;
             ResultSet rs = null;
             stmt = conn.createStatement();
             String query = "UPDATE shipgame.accountsandstats SET password = \"" + password + "\" WHERE email = \"" + email + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changeEmail(java.sql.Connection conn, String username, String email) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET email = \"" + email + "\" WHERE username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changePasswordViaUsername(java.sql.Connection conn, String username, String password) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET password = \"" + password + "\" WHERE username = \"" + username + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
+            return true;
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    public static boolean changeStatusViaUsername(java.sql.Connection conn, String username, int status) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "UPDATE shipgame.accountsandstats SET status = " + status + " WHERE username = \"" + username + "\";";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.executeUpdate();
             return true;
@@ -319,6 +493,62 @@ public class Connection {
         }
         catch (MessagingException me) {
             me.printStackTrace();
+        }
+    }
+    public static boolean sendFriendRequest(java.sql.Connection conn, String sender, String receiver) {
+        try {
+            Statement stmt = null;
+            ResultSet rs = null;
+            stmt = conn.createStatement();
+            String query = "select requests from shipgame.accountsandstats where username = \"" + receiver + "\";";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            String result = rs.getString("requests");
+            String[] receiverRequests = ArrayModification.toStringArray(result);
+            Statement stmt2 = null;
+            ResultSet rs2 = null;
+            stmt2 = conn.createStatement();
+            String query2 = "select requests from shipgame.accountsandstats where username = \"" + sender + "\";";
+            PreparedStatement preparedStatement2 = conn.prepareStatement(query2);
+            rs2 = preparedStatement2.executeQuery();
+            rs2.next();
+            String result2 = rs2.getString("requests");
+            String[] senderRequests = ArrayModification.toStringArray(result2);
+            if(Arrays.toString(receiverRequests).toLowerCase().contains(sender.toLowerCase())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You've already send a request to this person, so it did not go through.", ButtonType.OK);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Something went wrong");
+                alert.showAndWait();
+                return false;
+            }
+            else if(Arrays.toString(getFriends(conn, receiver)).toLowerCase().contains(sender.toLowerCase())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You're already friends with this person, so it did not go through.", ButtonType.OK);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Something went wrong");
+                alert.showAndWait();
+                return false;
+            }
+            else {
+                receiverRequests = ArrayModification.appendString(receiverRequests, sender);
+                String toSet = Arrays.toString(receiverRequests);
+                Statement stmt3 = null;
+                ResultSet rs3 = null;
+                stmt3 = conn.createStatement();
+                String query3 = "UPDATE shipgame.accountsandstats SET requests = \"" + toSet + "\" WHERE username = \"" + receiver + "\";";
+                PreparedStatement preparedStatement3 = conn.prepareStatement(query3);
+                preparedStatement3.executeUpdate();
+                return true;
+            }
+        }
+        catch(SQLException ex) {
+            System.out.println(ex);
+            System.out.println(Arrays.toString(ex.getStackTrace()));
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong. The friend request could not be sent.", ButtonType.OK);
+            alert.setTitle("Something went wrong");
+            alert.setHeaderText("Something went wrong");
+            alert.showAndWait();
+            return false;
         }
     }
 }
