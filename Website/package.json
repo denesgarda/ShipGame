@@ -1,7 +1,7 @@
 {
-  "name": "nodeproject1",
+  "name": "theshipgame",
   "version": "1.0.0",
-  "description": "",
+  "description": "The official Ship Game website",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,5 +19,9 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "pug": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ShipGame"
   }
 }
