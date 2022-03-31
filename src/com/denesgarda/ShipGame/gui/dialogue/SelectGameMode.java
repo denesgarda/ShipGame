@@ -10,8 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GameMode extends JFrame {
-    public GameMode() {
+public class SelectGameMode extends JFrame {
+    public SelectGameMode() {
         super("Select Game Mode");
         this.setResizable(false);
         this.setSize(250, 180);
@@ -24,8 +24,8 @@ public class GameMode extends JFrame {
         easy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameMode.super.setVisible(false);
-                Game game = new Game(150, 3000, 10000);
+                SelectGameMode.super.setVisible(false);
+                Game game = new Game(Main.Variables.version, 150, 3000, 10000, Game.GameMode.EASY);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
             }

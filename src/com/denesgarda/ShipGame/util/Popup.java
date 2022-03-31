@@ -14,10 +14,7 @@ public class Popup {
         return JOptionPane.showOptionDialog(null, "New Game or Load Game", "Play", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/question.png"), new String[]{"New Game", "Load Game"}, "New Game");
     }
 
-    public static void quit() {
-        int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "Quit?", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/question.png"), new String[]{"No", "Yes"}, "No");
-        if (choice == 1) {
-            System.exit(0);
-        }
+    public static int quit() {
+        return JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "Quit?", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/question.png"), new String[]{"No", "Yes"}, "No");
     }
 }
