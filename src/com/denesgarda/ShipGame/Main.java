@@ -15,7 +15,7 @@ import java.net.*;
 public class Main {
     public static class Variables {
         public static final String name = "The Ship Game";
-        public static final double version = 3.0;
+        public static final double version = 3.1;
 
         public static class Port {
             public static final String[] names = new String[]{"Havenborough", "Woodham", "Lightmeadow", "Coldfield", "Arkala", "Wolford", "Blackpool", "Exeter", "Cesterfield", "Falkirk", "Oakheart"};
@@ -27,23 +27,35 @@ public class Main {
     public static Window window;
 
     public static void main(String[] args) {
-        try {
-            URLConnection connection = new URL("https://raw.githubusercontent.com/DenDen747/ShipGame/main/.versioninfo").openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            double newestVersion = Double.parseDouble(reader.readLine());
-            if (Variables.version < newestVersion) {
-                String link = reader.readLine();
-                int option = JOptionPane.showOptionDialog(null, "A newer version is available. Updating is highly recommended.", "Update Available", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/update.png"), new String[]{"Update", "Skip Version"}, "Update");
-                if (option == 0) {
-                    Desktop.getDesktop().browse(new URI(link));
-                    System.exit(0);
-                }
-            }
-        } catch (IOException | URISyntaxException e) {
-            Popup.error("Update Check Failed", "Failed to check for update.", false);
-        }
+        checkForUpdate();
 
         window = new Window();
         window.setPanel(new Menu(window));
+    }
+
+    public static boolean checkForUpdate() {
+        while (true) {
+            try {
+                URLConnection connection = new URL("https://raw.githubusercontent.com/DenDen747/ShipGame/main/.versioninfo").openConnection();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                double newestVersion = Double.parseDouble(reader.readLine());
+                if (Variables.version < newestVersion) {
+                    String link = reader.readLine();
+                    int option = JOptionPane.showOptionDialog(null, "A newer version is available. Updating is highly recommended.", "Update Available", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/update.png"), new String[]{"Update", "Skip Version"}, "Update");
+                    if (option == 0) {
+                        Desktop.getDesktop().browse(new URI(link));
+                        System.exit(0);
+                    }
+                    return true;
+                }
+                break;
+            } catch (IOException | URISyntaxException e) {
+                int option = JOptionPane.showOptionDialog(null, "Failed to check for update.", "Update Check Failed", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/error.png"), new String[]{"Try Again", "Continue"}, "Try Again");
+                if (option == 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
