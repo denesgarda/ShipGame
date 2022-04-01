@@ -23,7 +23,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            URLConnection connection = new URL("").openConnection();
+            URLConnection connection = new URL("https://raw.githubusercontent.com/DenDen747/ShipGame/main/.versioninfo").openConnection();
         } catch (MalformedURLException e) {
             
         }
