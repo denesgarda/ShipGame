@@ -3,6 +3,10 @@ package com.denesgarda.ShipGame;
 import com.denesgarda.ShipGame.gui.Window;
 import com.denesgarda.ShipGame.gui.panels.Menu;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class Main {
     public static class Variables {
         public static final String name = "The Ship Game";
@@ -18,6 +22,12 @@ public class Main {
     public static Window window;
 
     public static void main(String[] args) {
+        try {
+            URLConnection connection = new URL("").openConnection();
+        } catch (MalformedURLException e) {
+            
+        }
+
         window = new Window();
         window.setPanel(new Menu(window));
     }
