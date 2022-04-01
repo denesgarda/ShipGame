@@ -105,7 +105,7 @@ public class GamePanel extends Panel {
         layout.putConstraint(SpringLayout.NORTH, inventoryDisplay, 20, SpringLayout.NORTH, inventoryTitle);
         this.add(inventoryDisplay);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, portTitle, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        layout.putConstraint(SpringLayout.NORTH, portTitle, 140, SpringLayout.NORTH, inventoryDisplay);
+        layout.putConstraint(SpringLayout.NORTH, portTitle, 150, SpringLayout.NORTH, inventoryDisplay);
         this.add(portTitle);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, portDisplay, 0, SpringLayout.HORIZONTAL_CENTER, this);
         layout.putConstraint(SpringLayout.NORTH, portDisplay, 20, SpringLayout.NORTH, portTitle);

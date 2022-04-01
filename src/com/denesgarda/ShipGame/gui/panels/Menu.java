@@ -6,6 +6,7 @@ import com.denesgarda.ShipGame.Main;
 import com.denesgarda.ShipGame.gui.Panel;
 import com.denesgarda.ShipGame.gui.component.Label;
 import com.denesgarda.ShipGame.gui.dialogue.SelectGameMode;
+import com.denesgarda.ShipGame.util.ImageManager;
 import com.denesgarda.ShipGame.util.Popup;
 
 import javax.swing.*;
@@ -45,8 +46,16 @@ public class Menu extends Panel {
                             bufferedReader.close();
                             Serialized serialized = new Serialized(data);
                             Game game = (Game) serialized.deSerialize();
-                            GamePanel gamePanel = new GamePanel(Main.window, game);
-                            Main.window.setPanel(gamePanel);
+                            if (Main.Variables.version != game.version) {
+                                int choice = JOptionPane.showOptionDialog(null, "This game was created in a different version.\nLaunching it may cause issues.\n\nGame version: " + game.version + "\nCurrent version: " + Main.Variables.version, "Wrong Version", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/warning.png"), new String[]{"Cancel", "Launch Anyway"}, "Cancel");
+                                if (choice == 1) {
+                                    GamePanel gamePanel = new GamePanel(Main.window, game);
+                                    Main.window.setPanel(gamePanel);
+                                }
+                            } else {
+                                GamePanel gamePanel = new GamePanel(Main.window, game);
+                                Main.window.setPanel(gamePanel);
+                            }
                         } catch (Exception ex) {
                             Popup.error("Open Failed", "Failed to open game.", false);
                         }
