@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Timer extends JFrame {
+public class Timer extends Dialogue {
     public Timer(String title, String message, Runnable runnable) {
         super(title);
         this.setResizable(false);

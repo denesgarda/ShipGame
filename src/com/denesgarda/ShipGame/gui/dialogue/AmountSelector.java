@@ -16,7 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-public class AmountSelector extends JFrame {
+public class AmountSelector extends Dialogue {
     private Label cost;
     private double m;
     private Label transaction;

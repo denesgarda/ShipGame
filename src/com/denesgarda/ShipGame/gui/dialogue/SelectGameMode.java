@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SelectGameMode extends JFrame {
+public class SelectGameMode extends Dialogue {
     public SelectGameMode() {
         super("Select Game Mode");
         this.setResizable(false);

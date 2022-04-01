@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ItemSelector extends JFrame {
+public class ItemSelector extends Dialogue {
     public ItemSelector(String[] items, Selected selected) {
         super("Select An Item");
         this.setResizable(false);

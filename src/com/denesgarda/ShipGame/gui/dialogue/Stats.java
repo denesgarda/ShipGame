@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Stats extends JFrame {
+public class Stats extends Dialogue {
     public Stats(Finished finished) {
         super("Custom Settings");
         this.setResizable(false);

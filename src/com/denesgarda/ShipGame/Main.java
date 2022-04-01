@@ -15,7 +15,7 @@ import java.net.*;
 public class Main {
     public static class Variables {
         public static final String name = "The Ship Game";
-        public static final double version = 3.1;
+        public static final double version = 3.2;
 
         public static class Port {
             public static final String[] names = new String[]{"Havenborough", "Woodham", "Lightmeadow", "Coldfield", "Arkala", "Wolford", "Blackpool", "Exeter", "Cesterfield", "Falkirk", "Oakheart"};
