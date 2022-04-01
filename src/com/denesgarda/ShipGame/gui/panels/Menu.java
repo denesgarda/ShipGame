@@ -94,9 +94,23 @@ public class Menu extends Panel {
         });
         this.add(github);
 
+        JButton checkForUpdate = new JButton("Check for Update");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, checkForUpdate, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        layout.putConstraint(SpringLayout.NORTH, checkForUpdate, 30, SpringLayout.NORTH, github);
+        checkForUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean update = Main.checkForUpdate();
+                if (!update) {
+                    JOptionPane.showMessageDialog(null, "You are running the newest version.", "Up to Date", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/info.png"));
+                }
+            }
+        });
+        this.add(checkForUpdate);
+
         JButton quit = new JButton("Quit");
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, quit, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, github);
+        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, checkForUpdate);
         quit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
