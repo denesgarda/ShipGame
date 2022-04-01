@@ -11,6 +11,7 @@ import com.denesgarda.ShipGame.gui.component.Label;
 import com.denesgarda.ShipGame.gui.dialogue.AmountSelector;
 import com.denesgarda.ShipGame.gui.dialogue.ItemSelector;
 import com.denesgarda.ShipGame.gui.dialogue.Timer;
+import com.denesgarda.ShipGame.util.ImageManager;
 import com.denesgarda.ShipGame.util.Popup;
 import com.denesgarda.ShipGame.util.Printer;
 
@@ -159,7 +160,8 @@ public class GamePanel extends Panel {
                                         money.setText("Money: " + game.money);
                                         inventoryDisplay.setText(getInventory());
                                         if (game.money >= game.goal) {
-                                            JOptionPane.showMessageDialog(null, "You have reached the goal. YOU WIN!", "You Win", JOptionPane.INFORMATION_MESSAGE);
+                                            JOptionPane.showMessageDialog(null, "You have reached the goal. YOU WIN!", "You Win", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/win.png"));
+                                            game.won = true;
                                         }
                                     }
                                 });
@@ -184,7 +186,11 @@ public class GamePanel extends Panel {
                         portDisplay.setText(port.toString());
                         inventoryDisplay.setText(getInventory());
                         if (game.food < 0) {
-                            JOptionPane.showMessageDialog(null, "You have run out of food. YOU LOSE!", "You Lose", JOptionPane.INFORMATION_MESSAGE);
+                            if (game.won) {
+                                JOptionPane.showMessageDialog(null, "You have run out of food. But you already won by reaching the goal before!", "Game Over", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/lose.png"));
+                            } else {
+                                JOptionPane.showMessageDialog(null, "You have run out of food. YOU LOSE!", "You Lose", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/lose.png"));
+                            }
                             Main.window.setPanel(new Menu(Main.window));
                         }
                     }
@@ -208,28 +214,6 @@ public class GamePanel extends Panel {
         portTitle.setText(port.getName());
         portDisplay.setText(port.toString());
         inventoryDisplay.setText(getInventory());
-        /*
-        gameLoop:
-        while (true) {
-            if (game.money <= 0) {
-                JOptionPane.showInternalMessageDialog(null, "You have run out of money.", "You Lose", JOptionPane.INFORMATION_MESSAGE);
-                Main.window.setPanel(new Menu(Main.window));
-                return;
-            }
-            if (game.food < 0) {
-                JOptionPane.showInternalMessageDialog(null, "You have run out of food.", "You Lose", JOptionPane.INFORMATION_MESSAGE);
-                Main.window.setPanel(new Menu(Main.window));
-                return;
-            }
-            if (game.money >= game.goal) {
-                game.won = true;
-                JOptionPane.showInternalMessageDialog(null, "You have reached the goal. You can continue the game and exit any time.", "You Win", JOptionPane.INFORMATION_MESSAGE);
-            }
-            Port port = game.map.get(game.current);
-            portTitle.setText(port.getName());
-            portDisplay.setText(port.toString());
-            inventoryDisplay.setText(getInventory());
-        }*/
     }
 
     private void sail() {

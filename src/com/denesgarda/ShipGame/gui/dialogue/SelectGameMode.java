@@ -38,7 +38,7 @@ public class SelectGameMode extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectGameMode.super.setVisible(false);
-                Game game = new Game(Main.Variables.version, 125, 2500, 12500, Game.GameMode.EASY);
+                Game game = new Game(Main.Variables.version, 125, 2500, 12500, Game.GameMode.MEDIUM);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
             }
@@ -50,7 +50,7 @@ public class SelectGameMode extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectGameMode.super.setVisible(false);
-                Game game = new Game(Main.Variables.version, 100, 2000, 15000, Game.GameMode.EASY);
+                Game game = new Game(Main.Variables.version, 100, 2000, 15000, Game.GameMode.HARD);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
             }
@@ -62,7 +62,7 @@ public class SelectGameMode extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SelectGameMode.super.setVisible(false);
-                Game game = new Game(Main.Variables.version, 75, 1500, 30000, Game.GameMode.EASY);
+                Game game = new Game(Main.Variables.version, 75, 1500, 30000, Game.GameMode.IMPOSSIBLE);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
             }
@@ -73,11 +73,15 @@ public class SelectGameMode extends JFrame {
         custom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Popup.error("Not Yet Implemented", "Creating custom games is not yet implemented.", false);
-                /*SelectGameMode.super.setVisible(false);
-                Game game = new Game(Main.Variables.version, 150, 3000, 10000, Game.GameMode.EASY);
-                GamePanel gamePanel = new GamePanel(Main.window, game);
-                Main.window.setPanel(gamePanel);*/
+                new Stats(new Stats.Finished() {
+                    @Override
+                    public void onFinish(int food, int money, int goal) {
+                        SelectGameMode.super.setVisible(false);
+                        Game game = new Game(Main.Variables.version, food, money, goal, Game.GameMode.CUSTOM);
+                        GamePanel gamePanel = new GamePanel(Main.window, game);
+                        Main.window.setPanel(gamePanel);
+                    }
+                });
             }
         });
         panel.add(custom);

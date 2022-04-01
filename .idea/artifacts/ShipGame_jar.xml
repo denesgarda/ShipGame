@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ShipGame:jar">
+    <output-path>$PROJECT_DIR$/builds</output-path>
+    <root id="archive" name="ShipGame.jar">
+      <element id="module-output" name="ShipGame" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/JarData_1.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
