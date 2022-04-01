@@ -2,10 +2,15 @@ package com.denesgarda.ShipGame;
 
 import com.denesgarda.ShipGame.gui.Window;
 import com.denesgarda.ShipGame.gui.panels.Menu;
+import com.denesgarda.ShipGame.util.ImageManager;
+import com.denesgarda.ShipGame.util.Popup;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.*;
 
 public class Main {
     public static class Variables {
@@ -24,8 +29,18 @@ public class Main {
     public static void main(String[] args) {
         try {
             URLConnection connection = new URL("https://raw.githubusercontent.com/DenDen747/ShipGame/main/.versioninfo").openConnection();
-        } catch (MalformedURLException e) {
-            
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            double newestVersion = Double.parseDouble(reader.readLine());
+            if (Variables.version < newestVersion) {
+                String link = reader.readLine();
+                int option = JOptionPane.showOptionDialog(null, "A newer version is available. Updating is highly recommended.", "Update Available", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/update.png"), new String[]{"Update", "Skip Version"}, "Update");
+                if (option == 0) {
+                    Desktop.getDesktop().browse(new URI(link));
+                    System.exit(0);
+                }
+            }
+        } catch (IOException | URISyntaxException e) {
+            Popup.error("Update Check Failed", "Failed to check for update.", false);
         }
 
         window = new Window();

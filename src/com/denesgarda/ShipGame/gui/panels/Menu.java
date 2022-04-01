@@ -10,12 +10,15 @@ import com.denesgarda.ShipGame.util.ImageManager;
 import com.denesgarda.ShipGame.util.Popup;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Menu extends Panel {
     public Menu(JFrame parent) {
@@ -65,9 +68,35 @@ public class Menu extends Panel {
         });
         this.add(play);
 
+        JButton howToPlay = new JButton("How to Play");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, howToPlay, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        layout.putConstraint(SpringLayout.NORTH, howToPlay, 30, SpringLayout.NORTH, play);
+        howToPlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "You start off with a certain amount of food, money, and a set goal.\nYou have to sail from port to port, buying and selling items.\nThe items' prices vary from port to port.\nEvery time you sail, you use up 5 food.\nThe objective is to reach the money goal before running out of food.", "How to Play", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/info.png"));
+            }
+        });
+        this.add(howToPlay);
+
+        JButton github = new JButton("GitHub");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, github, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        layout.putConstraint(SpringLayout.NORTH, github, 30, SpringLayout.NORTH, howToPlay);
+        github.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://github.com/DenDen747/ShipGame"));
+                } catch (URISyntaxException | IOException ex) {
+                    Popup.error("Internal Error", "An internal error occurred.", false);
+                }
+            }
+        });
+        this.add(github);
+
         JButton quit = new JButton("Quit");
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, quit, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, play);
+        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, github);
         quit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
