@@ -14,7 +14,7 @@ public class Stats extends Dialogue {
     public Stats(Finished finished) {
         super("Custom Settings");
         this.setResizable(false);
-        this.setSize(250, 200);
+        this.setSize(400, 200);
         this.setIconImage(ImageManager.getImageIcon("/assets/image/icon.png").getImage());
         this.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
@@ -22,9 +22,9 @@ public class Stats extends Dialogue {
 
         JSlider foodSlider = new JSlider();
         foodSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
-        foodSlider.setMinimum(10);
-        foodSlider.setMaximum(300);
-        foodSlider.setValue(10);
+        foodSlider.setMinimum(2);
+        foodSlider.setMaximum(60);
+        foodSlider.setValue(2);
         panel.add(foodSlider);
 
         Label food = new Label("Food: 10", 12, false);
@@ -33,9 +33,9 @@ public class Stats extends Dialogue {
 
         JSlider moneySlider = new JSlider();
         moneySlider.setAlignmentX(Component.CENTER_ALIGNMENT);
-        moneySlider.setMinimum(250);
-        moneySlider.setMaximum(15000);
-        moneySlider.setValue(250);
+        moneySlider.setMinimum(5);
+        moneySlider.setMaximum(300);
+        moneySlider.setValue(5);
         panel.add(moneySlider);
 
         Label money = new Label("Money: 250", 12, false);
@@ -44,9 +44,9 @@ public class Stats extends Dialogue {
 
         JSlider goalSlider = new JSlider();
         goalSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
-        goalSlider.setMinimum(5000);
-        goalSlider.setMaximum(100000);
-        goalSlider.setValue(5000);
+        goalSlider.setMinimum(20);
+        goalSlider.setMaximum(400);
+        goalSlider.setValue(20);
         panel.add(goalSlider);
 
         Label goal = new Label("Goal: 5000", 12, false);
@@ -60,21 +60,21 @@ public class Stats extends Dialogue {
         foodSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                food.setText("Food: " + foodSlider.getValue());
+                food.setText("Food: " + foodSlider.getValue() * 5);
             }
         });
 
         moneySlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                money.setText("Money: " + moneySlider.getValue());
+                money.setText("Money: " + moneySlider.getValue() * 50);
             }
         });
 
         goalSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                goal.setText("Goal: " + goalSlider.getValue());
+                goal.setText("Goal: " + goalSlider.getValue() * 250);
             }
         });
 
