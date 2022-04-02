@@ -11,11 +11,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.Properties;
 
 public class Main {
     public static class Variables {
         public static final String name = "The Ship Game";
-        public static final double version = 3.2;
+        public static final double version = 3.3;
 
         public static class Port {
             public static final String[] names = new String[]{"Havenborough", "Woodham", "Lightmeadow", "Coldfield", "Arkala", "Wolford", "Blackpool", "Exeter", "Cesterfield", "Falkirk", "Oakheart"};
@@ -25,10 +26,22 @@ public class Main {
     }
 
     public static Window window;
+    public static Config config;
+    public static Stats stats;
+    public static boolean inNotWonGame = false;
+    public static Game notWonGame;
 
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (inNotWonGame) {
+                    config.writeStats(false, notWonGame.gameMode);
+                }
+            }
+        });
         checkForUpdate();
-
+        config = new Config();
         window = new Window();
         window.setPanel(new Menu(window));
     }

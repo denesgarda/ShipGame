@@ -68,9 +68,39 @@ public class Menu extends Panel {
         });
         this.add(play);
 
+        JButton stats = new JButton("Stats");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, stats, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        layout.putConstraint(SpringLayout.NORTH, stats, 30, SpringLayout.NORTH, play);
+        stats.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Main.config.readStats();
+                double ratio = Math.round((double) (Main.stats.win_easy + Main.stats.win_medium + Main.stats.win_hard + Main.stats.win_impossible + Main.stats.win_custom) / (Main.stats.loss_easy + Main.stats.loss_medium + Main.stats.loss_hard + Main.stats.loss_impossible + Main.stats.loss_custom) * 1000.0) / 1000.0;
+                String message = "Win-Loss Ratio: " + ratio + "\n" +
+                        "\n" +
+                        "Wins:\n" +
+                        "\n" +
+                        "Easy: " + Main.stats.win_easy + "\n" +
+                        "Medium: " + Main.stats.win_medium + "\n" +
+                        "Hard: " + Main.stats.win_hard + "\n" +
+                        "Impossible: " + Main.stats.win_impossible + "\n" +
+                        "Custom: " + Main.stats.win_custom + "\n" +
+                        "\n" +
+                        "Losses:\n" +
+                        "\n" +
+                        "Easy: " + Main.stats.loss_easy + "\n" +
+                        "Medium: " + Main.stats.loss_medium + "\n" +
+                        "Hard: " + Main.stats.loss_hard + "\n" +
+                        "Impossible: " + Main.stats.loss_impossible + "\n" +
+                        "Custom: " + Main.stats.loss_custom + "\n";
+                JOptionPane.showMessageDialog(null, message, "Stats", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/stats.png"));
+            }
+        });
+        this.add(stats);
+
         JButton howToPlay = new JButton("How to Play");
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, howToPlay, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        layout.putConstraint(SpringLayout.NORTH, howToPlay, 30, SpringLayout.NORTH, play);
+        layout.putConstraint(SpringLayout.NORTH, howToPlay, 30, SpringLayout.NORTH, stats);
         howToPlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
