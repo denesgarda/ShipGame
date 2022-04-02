@@ -82,7 +82,7 @@ public class Stats extends Dialogue {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Stats.super.setVisible(false);
-                finished.onFinish(foodSlider.getValue(), moneySlider.getValue(), goalSlider.getValue());
+                finished.onFinish(foodSlider.getValue() * 5, moneySlider.getValue() * 50, goalSlider.getValue() * 250);
             }
         });
 
