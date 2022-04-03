@@ -45,8 +45,6 @@ public class GamePanel extends Panel {
 
     public GamePanel(JFrame parent, Game game) {
         super(parent);
-        Main.inNotWonGame = true;
-        Main.notWonGame = game;
         this.game = game;
         layout.putConstraint(SpringLayout.EAST, money, 0, SpringLayout.EAST, this);
         this.add(money);
@@ -62,11 +60,7 @@ public class GamePanel extends Panel {
             public void actionPerformed(ActionEvent e) {
                 int choice = Popup.quit();
                 if (choice == 1) {
-                    Main.inNotWonGame = false;
-                    if (!game.won) {
-                        Main.config.writeStats(false, game.gameMode);
-                        Main.window.setPanel(new Menu(Main.window));
-                    }
+                    Main.window.setPanel(new Menu(Main.window));
                 }
             }
         });
@@ -168,7 +162,6 @@ public class GamePanel extends Panel {
                                         if (game.money >= game.goal) {
                                             JOptionPane.showMessageDialog(null, "You have reached the goal. YOU WIN!", "You Win", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/win.png"));
                                             game.won = true;
-                                            Main.inNotWonGame = false;
                                             Main.config.writeStats(true, game.gameMode);
                                         }
                                     }
@@ -198,8 +191,6 @@ public class GamePanel extends Panel {
                                 JOptionPane.showMessageDialog(null, "You have run out of food. But you already won by reaching the goal before!", "Game Over", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/lose.png"));
                             } else {
                                 JOptionPane.showMessageDialog(null, "You have run out of food. YOU LOSE!", "You Lose", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/lose.png"));
-                                Main.inNotWonGame = false;
-                                Main.config.writeStats(false, game.gameMode);
                             }
                             Main.window.setPanel(new Menu(Main.window));
                         }

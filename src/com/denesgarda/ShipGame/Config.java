@@ -114,11 +114,26 @@ public class Config {
     public void writeStats(boolean win, Game.GameMode gameType) {
         if (win) {
             switch (gameType) {
-                case EASY -> Main.stats.win_easy++;
-                case MEDIUM -> Main.stats.win_medium++;
-                case HARD -> Main.stats.win_hard++;
-                case IMPOSSIBLE -> Main.stats.win_impossible++;
-                case CUSTOM -> Main.stats.win_custom++;
+                case EASY -> {
+                    Main.stats.win_easy++;
+                    Main.stats.loss_easy--;
+                }
+                case MEDIUM -> {
+                    Main.stats.win_medium++;
+                    Main.stats.loss_medium--;
+                }
+                case HARD -> {
+                    Main.stats.win_hard++;
+                    Main.stats.loss_hard--;
+                }
+                case IMPOSSIBLE -> {
+                    Main.stats.win_impossible++;
+                    Main.stats.loss_impossible--;
+                }
+                case CUSTOM -> {
+                    Main.stats.win_custom++;
+                    Main.stats.loss_custom--;
+                }
             }
         } else {
             switch (gameType) {

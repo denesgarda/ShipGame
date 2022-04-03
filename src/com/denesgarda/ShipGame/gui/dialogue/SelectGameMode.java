@@ -29,6 +29,7 @@ public class SelectGameMode extends Dialogue {
                 Game game = new Game(Main.Variables.version, 150, 3000, 10000, Game.GameMode.EASY);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
+                Main.config.writeStats(false, game.gameMode);
             }
         });
         panel.add(easy);
@@ -41,6 +42,7 @@ public class SelectGameMode extends Dialogue {
                 Game game = new Game(Main.Variables.version, 125, 2500, 12500, Game.GameMode.MEDIUM);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
+                Main.config.writeStats(false, game.gameMode);
             }
         });
         panel.add(medium);
@@ -53,6 +55,7 @@ public class SelectGameMode extends Dialogue {
                 Game game = new Game(Main.Variables.version, 100, 2000, 15000, Game.GameMode.HARD);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
+                Main.config.writeStats(false, game.gameMode);
             }
         });
         panel.add(hard);
@@ -65,6 +68,7 @@ public class SelectGameMode extends Dialogue {
                 Game game = new Game(Main.Variables.version, 75, 1500, 30000, Game.GameMode.IMPOSSIBLE);
                 GamePanel gamePanel = new GamePanel(Main.window, game);
                 Main.window.setPanel(gamePanel);
+                Main.config.writeStats(false, game.gameMode);
             }
         });
         panel.add(impossible);
@@ -80,6 +84,7 @@ public class SelectGameMode extends Dialogue {
                         Game game = new Game(Main.Variables.version, food, money, goal, Game.GameMode.CUSTOM);
                         GamePanel gamePanel = new GamePanel(Main.window, game);
                         Main.window.setPanel(gamePanel);
+                        Main.config.writeStats(false, game.gameMode);
                     }
                 });
             }
