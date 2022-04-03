@@ -138,9 +138,24 @@ public class Menu extends Panel {
         });
         this.add(checkForUpdate);
 
+        JButton reset = new JButton("Reset Stats");
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, reset, 0, SpringLayout.HORIZONTAL_CENTER, this);
+        layout.putConstraint(SpringLayout.NORTH, reset, 30, SpringLayout.NORTH, checkForUpdate);
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 int option = JOptionPane.showOptionDialog(null, "Are you sure you want to reset all stats?\nThis cannot be undone.", "Reset Stats", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, ImageManager.getImageIcon("/assets/image/reset.png"), new String[]{"Cancel", "Reset Stats"}, "Cancel");
+                if (option == 1) {
+                    Main.config.reset();
+                    JOptionPane.showMessageDialog(null, "Your stats have been reset.", "Stats Reset", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/reset.png"));
+                }
+            }
+        });
+        this.add(reset);
+
         JButton quit = new JButton("Quit");
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, quit, 0, SpringLayout.HORIZONTAL_CENTER, this);
-        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, checkForUpdate);
+        layout.putConstraint(SpringLayout.NORTH, quit, 30, SpringLayout.NORTH, reset);
         quit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

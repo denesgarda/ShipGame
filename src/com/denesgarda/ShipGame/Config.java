@@ -162,4 +162,25 @@ public class Config {
             Popup.error("Config Error", "Failed to read/write to stats file.", true);
         }
     }
+
+    public void reset() {
+        try {
+            Main.stats = new Stats();
+            Serialized serialized = Serialization.serialize(Main.stats);
+            String data = serialized.getData();
+            File file = new File(statsPath);
+            if (!file.exists()) {
+                boolean successful = file.createNewFile();
+                if (!successful) {
+                    throw new Exception();
+                }
+            }
+            FileWriter out = new FileWriter(statsPath);
+            out.write(data);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            Popup.error("Config Error", "Failed to read/write to stats file.", true);
+        }
+    }
 }

@@ -160,9 +160,11 @@ public class GamePanel extends Panel {
                                         money.setText("Money: " + game.money);
                                         inventoryDisplay.setText(getInventory());
                                         if (game.money >= game.goal) {
-                                            JOptionPane.showMessageDialog(null, "You have reached the goal. YOU WIN!", "You Win", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/win.png"));
-                                            game.won = true;
-                                            Main.config.writeStats(true, game.gameMode);
+                                            if (!game.won) {
+                                                JOptionPane.showMessageDialog(null, "You have reached the goal. YOU WIN!", "You Win", JOptionPane.INFORMATION_MESSAGE, ImageManager.getImageIcon("/assets/image/win.png"));
+                                                game.won = true;
+                                                Main.config.writeStats(true, game.gameMode);
+                                            }
                                         }
                                     }
                                 });
